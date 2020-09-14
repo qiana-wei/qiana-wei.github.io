@@ -321,8 +321,8 @@ message: [message]
 | ------- | -------- | ------------------------------------------------------------------------- |
 | repo    | 库地址   |                                                                           |
 | branch  | 分支名称 | `gh-pages` (GitHub)<br/>`coding-pages` (Coding.net)<br/>`master` (others) |
-| message | 提交信息 | Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}                            |
-| token   |          |                                                                           |
+| message | 提交信息 | `Site updated: {{ now('YYYY-MM-DD HH:mm:ss') }}`                          |
+| token   |         |                                                                           |
 
 repo 地址选择 ssh，我是直接部署到<userName>.github.io 这个仓库哒。
 
