@@ -1,5 +1,5 @@
 ---
-title: 记录一次Hexo博客搭建
+title: 记录一次Hexo博客系统搭建
 date: 2020-09-14 00:28:49
 tags: Hexo
 category: 系统
