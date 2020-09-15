@@ -35,6 +35,7 @@ hexo clean && hexo deploy
 * JS
   * 核心
   * ES5678
+  * 异步执行
 * CSS
   * 动画
   * 响应式
