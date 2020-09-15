@@ -2,7 +2,7 @@
 title: 记录一次Hexo博客搭建
 date: 2020-09-14 00:28:49
 tags: Hexo
-category: Hexo
+category: 系统
 ---
 
 [官网戳这里](https://hexo.io/zh-cn/docs)
@@ -194,27 +194,27 @@ Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [docume
 
 _首页_
 
-![首页图片](/assets/img/hexo/index.jpg)
+![首页图片](./index.jpg)
 
 _文档_
 
-![文档图片](/assets/img/hexo/posts.jpg)
+![文档图片](./posts.jpg)
 
 _分类列表_
 
-![分类列表图片](/assets/img/hexo/categories1.jpg)
+![分类列表图片](./categories1.jpg)
 
 _分类详情_
 
-![分类详情图片](/assets/img/hexo/categories2.jpg)
+![分类详情图片](./categories2.jpg)
 
 _标签列表_
 
-![标签列表图片](/assets/img/hexo/tags1.jpg)
+![标签列表图片](./tags1.jpg)
 
 _标签详情_
 
-![标签详情图片](/assets/img/hexo/tags2.jpg)
+![标签详情图片](./tags2.jpg)
 
 ## 五、写文档
 
