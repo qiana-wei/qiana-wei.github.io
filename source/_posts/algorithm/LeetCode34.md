@@ -159,8 +159,8 @@ var searchRange = function(nums, target) {
 };
 ```
 
-
-
-​			
-
-
+动图随便看看
+*二分查找target*
+![二分查找](./二分查找.gif)
+*searchLeftTarget*
+![searchLeftTarget](./二分查找left.gif)
