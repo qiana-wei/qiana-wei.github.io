@@ -7,6 +7,8 @@ category: "VUE"
 
 > 在 VUE 中实现复制到剪切板功能
 
+[粘贴剪切板内容到页面看这里](/2020/09/18/VUE/past-clioboardData/)
+
 ### 工具
 
 `vue-clipboard2`,[官方文档看这里](https://vue-clipboard2.inndy.tw/)
@@ -39,7 +41,8 @@ Vue.use(VueClioboard);
       type="button"
       v-clipboard:copy="message"
       v-clipboard:success="onCopy"
-      v-clipboard:error="onError">
+      v-clipboard:error="onError"
+    >
       copy message
     </button>
   </div>
@@ -90,11 +93,11 @@ Vue.use(VueClioboard);
       doCopy() {
         this.$copyText(this.message).then(
           function (e) {
-              //成功函数
+            //成功函数
             alert("Copied message");
           },
           function (e) {
-              //失败函数
+            //失败函数
             alert("Faild to copy message");
           }
         );
