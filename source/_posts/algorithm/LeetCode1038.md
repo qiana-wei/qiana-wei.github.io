@@ -1,7 +1,7 @@
 ---
 title: 每日算法-LeetCode1038
 date: 2020-09-21 11:24:21
-tags: ["算法", "LeetCode", "二叉树"]
+tags: ["算法", "LeetCode", "二叉树", "反向遍历"]
 category: "算法"
 ---
 
