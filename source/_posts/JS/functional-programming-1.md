@@ -7,7 +7,7 @@ category: 'JS'
 
 # 什么是函数式编程
 
-> 函数式编程（Function Programming, 缩写：FP）。是一种编程范式。
+> 函数式编程（Function Programming, 缩写：FP）。是一种[编程范式](/2020/10/11/JS/programming-parading/)。
 
 
 
@@ -31,4 +31,7 @@ category: 'JS'
 # 函数式编程的特性
 
 1. 高阶函数
-2. 
+
+
+
+.......未完待续....
