@@ -27,7 +27,7 @@ npm install vue-clipboard2 --save
 import Vue from "vue";
 import VueClipboard from "vue-clipboard2";
 
-Vue.use(VueClioboard);
+Vue.use(VueClipboard);
 ```
 
 **方式 1**
