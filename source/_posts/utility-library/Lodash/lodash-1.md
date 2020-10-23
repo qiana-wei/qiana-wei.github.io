@@ -1,5 +1,5 @@
 ---
-title: Lodash-1
+title: Lodash-1:基本概念
 date: 2020-10-18 13:54:16
 tags: ['Lodash','函数式编程']
 category: "Lodash"
@@ -75,3 +75,38 @@ function curry(fn){
 }
 ```
 
+### 3. 组合函数
+
+```js
+//模拟flowRight
+function flowRight(...args){
+  return function(value){
+    return args.reverse().reduce(function(acc,cur){
+      return cur(acc)
+    },value)
+  }
+}
+```
+
+**ps**: reduce()方法：
+
+`reduce()` 方法对数组中的每个元素执行一个由您提供的**reducer**函数(升序执行)，将其结果汇总为单个返回值。
+
+**reducer** 函数接收四个参数
+
+* Accumulator(acc)(累计器)
+* Current Value(cur)(当前值)
+* Current Index(idx)(当前索引)
+* Source Array(src)(源数组)
+
+语法：
+
+```js
+arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])
+```
+
+**initialValue**：作为第一次调用 `callback`函数时的第一个参数的值。 
+
+如果没有提供初始值，则将使用数组中的第一个元素。
+
+ 在没有初始值的空数组上调用 reduce 将报错。

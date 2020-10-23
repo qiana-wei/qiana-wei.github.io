@@ -1,7 +1,7 @@
 ---
-title: 函数式编程-1
+title: 函数式编程
 date: 2020-10-11 16:47:21
-tags: ['函数式编程']
+tags: ['函数式编程','Lodash']
 category: 'JS'
 ---
 
@@ -37,7 +37,7 @@ category: 'JS'
 **3.外部环境支持**
 
 * 打包过程中可以更好的使用 tree shaking过滤无用代码
-* loads, underscore,ramda等库可以帮助我们进行函数式开发
+* lodash, underscore,ramda等库可以帮助我们进行函数式开发
 
 
 
@@ -335,5 +335,458 @@ console.log(getSumWithCurry(1)(2,3))
 
 偏函数将一个或多个参数固定到内部，返回一个需要较少参数的函数。
 
+# 函数组合（compose）
 
+使用纯函数和柯里化容易写出洋葱代码，函数组合可以让我们把细粒度的函数重新组合成一个新的函数。
+
+如果一个函数要经过多个函数处理才能得到最终值，这个时候，可以把中间过程合并成一个函数。
+
+函数就像是数据的管道，函数组合就是把这些管道连接起来，让数据穿过多个管道形成最终结果。
+
+**函数组合默认是从右向左执行**
+
+```js
+//例子，将f,g函数进行组合
+function compose(f,g){
+  return function(value){
+    return f(g(value))
+  }
+}
+```
+
+###  **lodash**中的组合函数
+
+lodash中flow()和flowRight()都可以组合多个函数。
+
+flow()是从左到右运行。
+
+flowRight()是从右到左执行。
+
+```js
+//lodash中使用flowRight函数，取数组最后一个值，并大写
+const _ = require('lodash')
+const reverse = array => array.reverse() //反转函数
+const first = array => array[0]	//取最后一个值
+const toUpper = str => str.toUpperCase() //大写
+const f = flowRight(toUpper,first,reverse)//组合函数
+
+//测试
+let array = ['case',1,2,3,4,'Jack']
+console.log(f(array))  //JACJK
+```
+
+```js
+//模拟flowRight
+function flowRight(...args){
+  return function(value){
+    return args.reverse().reduce(function(acc,cur){
+      return cur(acc)
+    },value)
+  }
+}
+```
+
+### 函数组合结合律
+
+函数组合要满足结合律(associative)
+
+a\*b\*c == a\*(b\*c) == (a\*b)\*c
+
+即函数f,g,h组合时，f,g组合后再与h组合  与 g,h组合后再与f组合，结果是一样的
+
+```js
+let f = compose(f,g,h)
+let associative = compose(compose(f,g),h)  === compose(f,compose(g,h))
+//associactive == true
+```
+
+### 如何调试函数组合
+
+```js
+const _ = require('lodash')
+
+const split = _.curry((sep,str)=>_.split(str,sep))
+const join = _.curry((sep,arr)=>_.join(arr,sep))
+const map = _.curry((fn,array)=>_.map(array,fn))
+//调试函数
+const log = _.curry((tag,v)=>{
+    console.log(tag,v)
+    return v
+})
+
+const f = _.flowRight(join('-'),log('map后打印的'),map(_.toLower),log('split后打印的'),split(' '))
+
+console.log(f('NEVER SAY DIE'))
+// split后打印的 [ 'NEVER', 'SAY', 'DIE' ]
+// map后打印的 [ 'never', 'say', 'die' ]
+// never-say-die
+```
+
+# Lodash 中的FP模块
+
+[点击看这里](/2020/10/21/utility-library/Lodash/lodash-2/)
+
+# PointFree
+
+pointFree是一种编程风格，其具体实现是函数的组合
+
+pointFree：我们可以把数据处理的过程定义成与数据无关的合成运算，不需要用到代表数据的那个参数，值要把简单的步骤合成到一起。
+
+在使用这种模式之前，我们需要定义一些辅助的基本运算函数。
+
+即：
+
+* 不需要指明要处理的数据
+* 只需要合成运算的过程
+* 需要定义一些辅助的基本运算函数
+
+函数式编程即将运算过程抽象成函数，而PointFree即把我们抽象出来的函数，再组合成一个函数。
+
+**案例**
+
+```js
+//将字符串中首字母提取，并转换为大写，使用‘.’作为分隔符
+//world wild web => W.W.W
+const fp = require('lodash/fp')
+const f = fp.flow(fp.split(' '),fp.map(fp.flow(fp.first,fp.toUpper)),fp.join('.'))
+//测试
+console.log(f('world wild web'))
+//W.W.W
+```
+
+
+
+# 函子（Funtor）
+
+## 为什么要学函子
+
+利用函子控制副作用，处理异常及异步操作。
+
+## 什么是函子（Funtor）
+
+容器：包含值和值的变形关系（变形关系即为函数）
+
+函子：是一个特殊的容器，通过一个普通的对象来实现，该对象具有map方法。map方法可以接受一个参数，这个参数是对值进行处理的函数。
+
+* 函子维护一个值，值不对外公布
+
+* 函子有map方法，对值进行处理，并返回一个包含新值的函子
+
+```js
+class Container {
+  static of(value){
+    return new Container(value)
+  }
+  constructor(value){
+    this._value = value
+  }
+  map(fn){
+    return Container.of(fn(this._value))
+  }
+}
+//链式调用
+let r = Container.of(5)
+    .map(x=>x+2)
+    .map(x=>x*x)
+
+console.log(r)
+```
+
+## 函子处理异常
+
+```js
+let rseult = Container.of(null)
+    .map(x=>x.toUpperCase)
+
+console.log(r)
+//报错
+```
+
+当函子传入值为null时，函数因报错而没有输出。
+
+### MayBe函子
+
+MayBe函子可以处理输入值为**空值**的异常
+
+```js
+class MayBe {
+  static of(value){
+    return new MayBe(value)
+  }
+  constructor(value){
+    this._value = value
+  }
+  map(fn){
+    return  this.isNothing() ? MayBe.of(null) : MayBe.of(fn(this._value))
+  }
+  isNothing(){
+    return this._value === null || this._value === undefined
+  }
+}
+
+let r = MayBe.of('Hello World')
+        .map(x=>x.toUpperCase())
+
+let r2 = MayBe.of(null)
+        .map(x=>x.toUpperCase())
+
+let r3 = MayBe.of('Hello World')
+        .map(x=>x.toUpperCase())
+        .map(x=>null)
+        .map(x=>x.split(' '))
+
+console.log(r)
+//MayBe { _value: 'HELLO WORLD' }
+console.log(r2)
+//MayBe { _value: null }
+console.log(r3)
+//MayBe { _value: null }
+```
+
+由上述例子可以看出，MayBe函子不会报错，但当异常发生时，不会报错，但也没有返回我们的预期。
+
+MayBe函子虽然可以处理空值的问题，但是不知道是在哪一步发生了空值。
+
+### Either函子
+
+Either函子会在函数出现异常时，给出异常的提示信息，用于异常处理。
+
+拥有两个函子，当函数异常时，返回记录异常信息并其中一个函子。
+
+```js
+class Left{
+  static of(value){
+    return new Left(value)
+  }
+  constructor(value){
+    this._value = value
+  }
+  map(fn){
+    return this
+  }
+}
+
+class Right{
+  static of(value){
+    return new Right(value)
+  }
+  constructor(value){
+    this._value = value
+  }
+  map(fn){
+    return Right.of(fn(this._value))
+  }
+}
+
+function paseJson(str){
+  try{
+    return Right.of(JSON.parse(str))
+  }catch(e){
+    return Left.of({error:e.message})
+  }
+}
+//异常
+let r1 = paseJson('{name:zs}')
+console.log(r1)
+//Left { _value: { error: 'Unexpected token n in JSON at position 1' } }
+
+//正常
+let r = paseJson('{"name":"zs"}')
+    .map(x=>x.name.toUpperCase())
+console.log(r)
+//Right { _value: 'ZS' }
+```
+
+### IO函子
+
+* IO函子中的_value是一个函数，是把函数作为值来处理的
+* IO函子可以把不纯的动作存储到_value中，延迟执行这个不纯的操作(惰性执行)，将有副作用的操作延迟到调用的时候
+* 将有副作用的操作交给调用者来处理
+
+```js
+const fp = require('lodash/fp')
+class IO{
+  //返回值
+  static of(value){
+    return new IO(function(){
+      return value
+    })
+  }
+  constructor(fn){
+    this._value = fn
+  }
+  //将map中的函数与of中的函数组合成一个新的函数
+  map(fn){
+    return new IO(fp.flowRight(fn,this._value))
+  }
+}
+
+//测试
+
+//process  node进程，execPath node执行位置
+let r = IO.of(process).map(p=>p.execPath)
+/*
+将函数
+function(){
+  return value
+}
+与函数
+p=>p.execPath
+组合成一个函数组合
+
+返回一个IO函子
+*/
+console.log(r)
+//   IO { _value: [Function (anonymous)] }
+console.log(r._value())
+//   /usr/local/Cellar/node/14.2.0/bin/node
+```
+
+## 函子处理异步
+
+[Folktale](https://folktale.origamitower.com/)是一个标准的函数式编程库。没有提供很多功能函数，值提供了一些函数式处理的操作。
+
+```js
+//folktale中的curry 与 compose
+const { compose,curry} = require('folktale/core/lambda')
+const { toUpper,first } = require('lodash/fp')
+
+let f = curry(2,(x,y)=>x+y)
+console.log(f(2,3))
+console.log(f(2)(3))
+
+let fn = compose(toUpper,first)
+console.log(fn(['One','Two']))
+```
+
+### Tsak 函子处理异步
+
+```js
+//	异步读取文件
+const fs = require('fs')
+const {task} = require('folktale/concurrency/task')
+const {split,find} = require('lodash/fp')
+function readFile(fileName){
+  return task(resolver=>{
+    fs.readFile(fileName,'utf-8',(error,data)=>{
+      if(error){
+        resolver.reject(error)
+      }
+      resolver.resolve(data)
+    })
+  })
+}
+
+readFile('package.json')//返回task函子
+  .map(split('\n'))
+  .map(find(x=>x.includes('version')))
+  .run()//执行
+  .listen({
+    onRejected:error=>{
+      console.log(error)
+    },
+    onResolved:value=>{
+      console.log(value)
+    }
+  })
+```
+
+## Pointed函子
+
+pointed函子指实现了of静态方法的函子。
+
+of方法是为了避免使用new来创建对象，更深层上，of方法用来把值放在上下文(context)，然后在上下文中处理值。（把值放在容器中，用map来处理值。）
+
+## Monad函子
+
+Monad函子是可以变扁的Pointed函子，解决函子嵌套的问题。
+
+一个函子如果具有join和of两个方法并遵守一些定律，则这个函子为Monad函子。
+
+monad函子内部实现
+
+```js
+const fs = require('fs')
+const { curry,flowRight} = require('lodash/fp')
+
+class IO {
+  static of(value){
+    return new IO(function(){
+      return value
+    })
+  }
+  constructor(fn){
+    this._value = fn
+  }
+  map(fn){
+    return new IO(flowRight(fn,this._value))
+  }
+  join(){
+    return this._value()
+  }
+  flatMap(fn){
+    return this.map(fn).join()
+  }
+}
+let readFile = function(fileName){
+  return new IO(function(){
+    return fs.readFileSync(fileName,'utf-8')
+  })
+}
+let print = function(x){
+  return new IO(function(){
+    console.log(x)
+    return x
+  })
+}
+let r = readFile('package.json')
+    .flatMap(print)
+    .join()
+```
+
+# 思维导图
+
+{% pullquote mindmap mindmap-md %}
+  - 函数式编程
+    - 概念
+      - 是一种编程范式
+    - 特性
+      - 1.函数是一等公民
+      - 2.变量不可变性
+      - 3.无可见的副作用
+      - 4.高阶函数
+      - 5.闭包
+      - 6.柯里化、偏函数
+    - 优点
+      - 1.无可见的副作用
+      - 2.不易出错，易于测试
+      - 3.能够更好的处理并发问题
+      - 4.无this指向问题
+      - 5.惰性求值，益于性能优化
+    - 函数式编程基础
+      - 纯函数
+      - 柯里化
+      - 管道
+      - 函数组合
+    - 函子
+      - Functor
+      - MayBe：处理函数空值问题
+      - Either：处理函数异常问题
+      - IO：处理函数异步问题，返回函子
+      - Monad： 处理函子嵌套调用问题，通过join调用函子
+      - Task：处理函子异步问题
+    - 辅助工具
+      - lodash，lodash/fp
+      - folktale
+{% endpullquote %}
+
+备注：
+函数式编程是一种编程范式。
+将运算过程抽象成函数
+常用的编程范式还有：
+  面向过程编程（命令式编程）、面向对象编程、范型编程等
+函数式编程中，函数不是指计算机编程中的函数，而是数学中的函数，描述的是输入与输出的映射关系。
+函数式编程中，变量也非计算机编程中值的存储单元，而是数学中的值，具有不可变性。
+这也就注定了函数式编程中函数没有副作用的特性，即相同输入会得到相同输出。
+故而使得函数式编程不易出错，易于测试。
 
