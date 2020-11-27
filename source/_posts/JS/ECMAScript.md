@@ -264,7 +264,7 @@ const gender = true
 
 function myTagFunc(string,name,gender){
   console.log(string,name,gender)
-  const sex	 = gender ? 'man' : 'woman'
+  const sex = gender ? 'man' : 'woman'
   return string[0] + name + string[1] + sex + string[2]
 }
 const result = myTagFunc`hey,${name} is a ${gender}`
@@ -274,11 +274,11 @@ console.log(result)
 
 ### 字符串扩展方法
 
-startsWith('xx'): 判断字符串是否以'xx'开头
+`startWith('xx')`:判断字符串是否以xx开头
 
-endsWidth('xx'): 判断字符串是否以'xx'结尾
+`endsWith('xx')`:判断字符串是否以xx结尾
 
-includes('xx'):判断字符串是否包含'xx'
+`includes('xx')`:判断字符串是否包含xx
 
 ```js
 const message = 'Error: foo is not defined.'
@@ -1268,7 +1268,7 @@ for(let item of todos){
 
 #  ECMAScript 2016
 
-### includes 方法
+## includes 方法
 
 > 检查数组中是否包含指定元素
 
@@ -1278,7 +1278,7 @@ console.log(arr.includes(NaN))
 //true
 ```
 
-### 指数运算符  (底数 ** 指数)
+## 指数运算符  (底数 ** 指数)
 
 ```js
 console.log(Math.pow(2,10))
@@ -1289,7 +1289,7 @@ console.log(2**10)
 
 # ECMAScript 2017
 
-### Object扩展方法
+## Object扩展方法
 
 ```js
 const obj = {
@@ -1328,7 +1328,7 @@ console.log(Object.getOwnPropertyDescriptors(obj))
 */
 ```
 
-### 字符串填充方法
+## 字符串填充方法
 
 用给定字符串填充目标字符串的开始或结束位置，知道字符串达到指定长度
 
@@ -1348,7 +1348,7 @@ javascript------ | 128
 */
 ```
 
-### 允许在函数参数中添加尾逗号
+## 允许在函数参数中添加尾逗号
 
 ```js
 function(bar,baz,){
@@ -1356,7 +1356,7 @@ function(bar,baz,){
 }
 ```
 
-### Async/Await
+## Async/Await
 
 解决异步函数回调嵌套过深的问题，是Promise的语法糖。
 
@@ -1364,31 +1364,7 @@ function(bar,baz,){
 
 # ECMAScript2020
 
-### `String` 的 `matchAll` 方法
-
-> 返回一个包含所有匹配正则表达式的结果的迭代器。可以使用for..of..循环，也可使用`...` 或Array.form转换为数组
-
-```js
-const str = '2020-11-18'
-const reg = /\d/g  // 匹配数字
-console.log(str.matchAll(reg))
-//Object [RegExp String Iterator] {}
-console.log([...str.matchAll(reg)])
-/*
-[
-  [ '2', index: 0, input: '2020-11-18', groups: undefined ],
-  [ '0', index: 1, input: '2020-11-18', groups: undefined ],
-  [ '2', index: 2, input: '2020-11-18', groups: undefined ],
-  [ '0', index: 3, input: '2020-11-18', groups: undefined ],
-  [ '1', index: 5, input: '2020-11-18', groups: undefined ],
-  [ '1', index: 6, input: '2020-11-18', groups: undefined ],
-  [ '1', index: 8, input: '2020-11-18', groups: undefined ],
-  [ '8', index: 9, input: '2020-11-18', groups: undefined ]
-]
-*/
-```
-
-### 动态导入语句 `import()`
+## 动态导入语句 `import()`
 
 标准的`import()`导入的模块是静态的。所有被导入的模块，在加载时就被编译，不能做到按需加载，浪费性能，降低了首页的加载速度。
 
@@ -1423,15 +1399,35 @@ ele.onclick=()=>{
 const menu = await import('./menu.js')
 ```
 
+## String` 的 `matchAll` 方法
 
+> 返回一个包含所有匹配正则表达式的结果的迭代器。可以使用for..of..循环，也可使用`...` 或Array.form转换为数组
 
-### `import.meta`
+```js
+const str = '2020-11-18'
+const reg = /\d/g  // 匹配数字
+console.log(str.matchAll(reg))
+//Object [RegExp String Iterator] {}
+console.log([...str.matchAll(reg)])
+/*
+[
+  [ '2', index: 0, input: '2020-11-18', groups: undefined ],
+  [ '0', index: 1, input: '2020-11-18', groups: undefined ],
+  [ '2', index: 2, input: '2020-11-18', groups: undefined ],
+  [ '0', index: 3, input: '2020-11-18', groups: undefined ],
+  [ '1', index: 5, input: '2020-11-18', groups: undefined ],
+  [ '1', index: 6, input: '2020-11-18', groups: undefined ],
+  [ '1', index: 8, input: '2020-11-18', groups: undefined ],
+  [ '8', index: 9, input: '2020-11-18', groups: undefined ]
+]
+*/
+```
+
+## `import.meta`
 
 `import.meta`返回一个含有`url`属性的对象。`url`为当前模块的url路径，只能在模块内部使用。
 
-
-
-### 导出模块的命名空间
+## 导出模块的命名空间
 
 > export * as name from 'module'
 
@@ -1450,7 +1446,7 @@ export {utils}
 
 **\*\*注意，`export * as utils from 'module' `语句不会真的导入模块，因此在语句所在的模块中，是获取不到 `utils`的**
 
-### `Promise.allSettled`
+## Promise.allSettled`
 
 Promise中，如果参数中的任何一个promise为reject的话，则整个Promise.all 调用会立即终止，并返回一个reject的新的 Promise 对象。
 
@@ -1478,9 +1474,7 @@ Promise.allSettled([promise1,promise2,promise3]).then(res=>{
 */
 ```
 
-
-
-### 一种新的数据类型：`BigInt`
+## 一种新的数据类型：`BigInt`
 
 >  允许开发者在 JS 中使用更大的整数进行数据处理
 
@@ -1521,9 +1515,7 @@ console.log(99n === 99);
 //false 
 ```
 
-
-
-###  `GlobalThis`
+## `GlobalThis`
 
 ES2020引入`GlobalThis`,在各个环境中，都可以使用`GlobalThis`拿到顶层对象。
 
@@ -1543,7 +1535,7 @@ const getGlobal = function () {
 
 `GlobalThis`引入的目的，就是提供一种标准化的访问全局对象的方式。
 
-### 空位合并操作符--Nullish coalescing Operator--`??`
+## 空位合并操作符--Nullish coalescing Operator--`??`
 
 操作符：`??`,当左侧值为nullish，即`null` 或`undefined`时，返回右侧操作数，否则返回左侧操作数。
 
@@ -1576,9 +1568,7 @@ console.log("" ?? '??输出值5')
 //
 ```
 
-
-
-### 可选链操作符--Optional Chaining--`?.`
+## 可选链操作符--Optional Chaining--`?.`
 
 当我们要读取一个多层嵌套对象中的某个值时，需要先确认其前置对象存不存在。
 
