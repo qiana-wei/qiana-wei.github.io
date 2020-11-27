@@ -1266,9 +1266,7 @@ for(let item of todos){
 
 > 语言层面的模块标准化
 
-
-
-## ECMAScript 2016
+#  ECMAScript 2016
 
 ### includes 方法
 
@@ -1289,7 +1287,7 @@ console.log(2**10)
 //1024
 ```
 
-## ECMAScript 2017
+# ECMAScript 2017
 
 ### Object扩展方法
 
