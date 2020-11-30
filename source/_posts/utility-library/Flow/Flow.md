@@ -2,7 +2,7 @@
 title: Flow-静态类型检测器
 date: 2020-11-25 11:12:26
 tags: ['JS','Flow']
-category: 'JS'
+category: 'Flow'
 ---
 
 # 简介
