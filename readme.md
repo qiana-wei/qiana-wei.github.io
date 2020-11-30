@@ -42,3 +42,29 @@ hexo clean && hexo deploy
 - 浏览器
 - Node
 - VUE
+- 性能优化
+
+
+## 思维导图写法
+
+{% pullquote mindmap mindmap-md %}
+  - Qiana前端小站
+    - 算法
+    - CSS
+    - JS
+      - JS核心
+      - ECMAScript
+      - 函数式编程
+      - 事件循环
+      - 异步编程
+    - TS
+    - VUE
+    - React
+      - lodash，lodash/fp
+      - folktale
+    - webpack
+    - 工具库
+      - loadsh
+      - flow
+    - 性能优化
+{% endpullquote %}
