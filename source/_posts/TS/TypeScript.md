@@ -71,6 +71,7 @@ yarn tsc --init
 {
   "compilerOptions":{
     "target":"es5", /*编译后的文件采用的ES标准，'ES3','ES5','ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEX*/
+    "lib": ["ES5","ES7", "ES2017", "ES2018", "DOM","ES2020"], /*通过lib选项添加额外的标准库支持 */
     "module":"commonjs", /*输出的代码采用什么方式进行模块化,'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'*/
     "outDir":"dist/ts", /*编译结果，输出文件目录*/
     "rootDir":"code/ts", /*源文件目录*/
@@ -137,7 +138,7 @@ const undefinedType: undefined = undefined
 ```json
 //tsconfig.json
 {
-   "lib": ['ES6','dom','bom','ES2020'], /* Specify library files to be included in the compilation. */
+   "lib": ["ES5","ES7", "ES2017", "ES2018", "DOM","ES2020"], /* Specify library files to be included in the compilation. */
 }
 ```
 
