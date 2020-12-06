@@ -1,8 +1,8 @@
 ---
-title: image-webpack-loader
+title: webpack:image-webpack-loader
 date: 2020-10-10 17:23:11
-tags: ['webpack','npm']
-category: 'webpack'
+tags: ['前端工程化','webpack','npm']
+category: '前端工程化'
 ---
 
 最近新换了电脑，然后，项目环境从头搭~~
