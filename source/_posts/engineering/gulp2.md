@@ -589,3 +589,12 @@ module.exports = {
 }
 ```
 
+# 优化--在package.json中添加构建命令
+
+```json
+"script":{
+    "dev":"gulp dev",
+    "build":"gulp build"
+  },
+```
+

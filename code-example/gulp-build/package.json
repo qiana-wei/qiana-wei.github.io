@@ -9,6 +9,10 @@
     "pages",
     "zce"
   ],
+  "script":{
+    "dev":"gulp dev",
+    "build":"gulp build"
+  },
   "homepage": "https://github.com/zce/pages-boilerplate#readme",
   "bugs": {
     "url": "https://github.com/zce/pages-boilerplate/issues"
