@@ -6,7 +6,7 @@ category: '前端工程化'
 ---
 > 完成一个项目的自动化构建
 
-[项目代码看这里](https://github.com/qiana-wei/qiana-wei.github.io/tree/master/source/assets/code/gulp-build)
+[项目代码看这里](https://github.com/qiana-wei/qiana-wei.github.io/tree/master/code-example/gulp-build)
 
 # 项目目录结构及构建需求：
 
@@ -438,7 +438,7 @@ const useref = ()=>{
 
 处理下编译命令组合，最终代码如下：
 
-[项目代码看这里](https://github.com/qiana-wei/qiana-wei.github.io/tree/master/source/assets/code/gulp-build)
+[项目代码看这里](https://github.com/qiana-wei/qiana-wei.github.io/tree/master/code-example/gulp-build)
 
 ```js
 // 实现这个项目的构建任务

@@ -23,7 +23,7 @@ category: '前端工程化'
 
 # 搭建过程
 
-[完整项目文件看这里](https://github.com/qiana-wei/qiana-wei.github.io/tree/master/source/assets/code/node-vue-cli)
+[完整项目文件看这里](https://github.com/qiana-wei/qiana-wei.github.io/tree/master/code-example/node-vue-cli)
 
 1. 创建脚手架项目目录`node-vue-cli`,通过`yarn init`初始化一个`package.json`
 
