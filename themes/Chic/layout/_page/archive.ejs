@@ -1,13 +1,19 @@
 <div class="post-wrap archive">
-    <% var last_year = ''; %>
+    <% var last_month = ''; %>
     <% page.posts.each(function (post) { %>
         <% var cur_year = post.date.year(); %>
-
-        <% if(last_year !== cur_year){ %>
-            <h3><%- cur_year %></h3>
-        <% last_year = cur_year; } %>
+        <% var cur_month = post.date.month()+1; %>
+        <% if(last_month !== cur_month){ %>
+            <h3><%- cur_year %> - <%- cur_month %></h3>
+        <% last_month = cur_month; } %>
 
         <article class="archive-item">
+            <% if(post.categories.length !==0){%>
+                <% post.categories.each(function(item) { %>
+                <a class="archive-item-link archive-item-categories-link" href="<%- url_for(item.path) %>">[<%= item.name %>]</a>
+                <%  }) %>
+            <% } %>
+
             <a class="archive-item-link" href="<%- url_for(post.path) %>"><%= post.title %></a>
             <span class="archive-item-date"><%- date(post.date, theme.date_format) %></span>
         </article>
