@@ -12,6 +12,8 @@ category: '前端工程化'
 
 > Webpack支持以模块化的方式载入任意类型的资源文件---**资源模块**（Asset Module）
 
+[Webpack官网](https://webpack.docschina.org/)
+
 # 快速上手
 
 ## 安装
