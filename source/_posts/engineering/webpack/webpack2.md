@@ -1,6 +1,6 @@
 ---
 title: 前端工程化9-Webpack模块化打包实例
-date: 2020-12-08 12:40:00
+date: 2020-12-11 12:40:00
 tags: ['前端工程化','webpack','模块化打包']
 category: '前端工程化'
 ---
@@ -378,6 +378,28 @@ module.exports = {
  	//...
 }
 ```
+
+修改`package.json`
+
+```json
+{
+  "script":{
+    "lint":"eslint --ext .js --ext .vue src/"
+  }
+}
+```
+
+添加`.eslintrc`
+
+```
+module.exports = {
+  extends: [
+  	"plugin:vue/essential"
+  ]
+}
+```
+
+
 
 # 使用webpack-dev-server 启动服务
 
