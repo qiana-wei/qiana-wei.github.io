@@ -44,7 +44,7 @@ category: "算法"
  * @return {number[]}
  */
 var twoSum = function(nums, target) {
-	for(let i = 0; i<nums.length-1;i++){
+  for(let i = 0; i<nums.length-1;i++){
     for(let j = i+1;j<nums.length;j++){
       if(nums[i]+nums[j] == target){
         return [i,j]
@@ -71,13 +71,29 @@ var twoSum = function(nums, target) {
 var twoSum = function(nums, target) {
   let mapData = new Map()
   mapData.set(nums[0],0) // 存入第一个数值与下标
-	for(let i = 1; i<nums.length;i++){
+  for(let i = 1; i<nums.length;i++){
     let difference = target - nums[i]
     if(mapData.get(difference) || mapData.get(difference)==0){// 谨慎值为0的情况
       return [mapData.get(difference),i]
     }else{
       mapData.set(nums[i],i)
     }
+  }
+};
+```
+
+防御式编程，优化一下
+
+```js
+var twoSum = function(nums, target) {
+  let numMap = new Map()
+  for(let i =0;i<nums.length;i++){
+    let found = target-nums[i]
+    if(numMap.get(found) == undefined){
+        numMap.set(nums[i],i)
+        continue
+    }
+    return [numMap.get(found),i]
   }
 };
 ```
