@@ -94,5 +94,57 @@ VUE代码有两种渲染方式：
 
    如果多个组件都有相同的选项，就可以使用混入的方式，将选项合并，使代码重用。
 
+# vue的构建版本
+
+* 运行时版：不支持template模板，需要打包的时候提前编译。
+* 完整版：包含运行时版和编译器，体积比运行时版大10k左右，程序运行的时候把模板转换成render函数。
+
+vue-cli采用运行时版本，因为其效率更高。
+
+## 修改vue版本为完整版
+
+在`vue.config.js`中配置vue版本
+
+```js
+module.exports = {
+  //运行时编译
+  runtimeCompiler: true
+}
+```
+
+## 在运行时版本中使用render函数渲染
+
+*原代码*
+
+```js
+Vue.component('router-link',{
+  props:{
+    to:String,
+    template:'<a :href="to"><slot></slot></a>'
+  }
+})
+```
+
+*render函数渲染*
+
+```js
+Vue.component('router-link',{
+  props:{
+    to:String,
+    render(h){
+      return h('a',{
+        //设置属性
+        attrs:{
+          href:this.to
+        }
+      },[
+        //子元素为默认的slot插槽
+        this.$slots.default
+      ])
+    }
+  }
+})
+```
+
 
 
