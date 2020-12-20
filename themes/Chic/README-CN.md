@@ -89,7 +89,7 @@ links:
 #  Category:
 #  Tags:
 #  Link:
-#  Resume:
+ Resume:
 #  Publish:
 #  Trophy:
 #  Gallary:
@@ -111,7 +111,7 @@ links:
 #  QQ:
 #  Weibo:
 #  WeChat:
-  Github: https://github.com/Siricee
+  Github: https://github.com/qiana-wei
 
 # how links show: you have 2 choice--text or icon.
 links_text_enable: false

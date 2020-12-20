@@ -29,18 +29,18 @@ const data = {
       children: [
         {
           name: 'Twitter',
-          link: 'https://twitter.com/w_zce'
+          link: 'https://twitter.com/xxx'
         },
         {
           name: 'About',
-          link: 'https://weibo.com/zceme'
+          link: 'https://weibo.com/xxx'
         },
         {
           name: 'divider'
         },
         {
           name: 'About',
-          link: 'https://github.com/zce'
+          link: 'https://github.com/xxx'
         }
       ]
     }
