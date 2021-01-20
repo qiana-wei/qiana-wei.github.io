@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>Vue-Router的使用 | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Vue-Router的使用</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-12-15</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/VUE/">VUE</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="vue-router3-的基本使用"><a href="#vue-router3-的基本使用" class="headerlink" title="vue-router3 的基本使用"></a>vue-router3 的基本使用</h1><ol>
+<li>引入<code>vue-router</code>。</li>
+<li>在Vue实例中<strong>注册路由组件</strong>。</li>
+<li>规定一些路由规则，即路由与组件的对应关系。</li>
+<li>创建VueRouter实例，即<code>router</code>对象，并为vueRouter添加路由规则</li>
+<li>在创建Vue实例的过程中注册router对象</li>
+<li><code>vue-router</code> 暴露的<code>router-view</code>组件，是组件的占位符，当路由匹配时，<code>vue-router</code>加载的组件会替换<code>router-view</code></li>
+<li><code>vue-router</code>暴露的<code>router-link</code>组件，用于创建链接。</li>
+</ol>
+<p><em>router/index.js</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="comment">//1.引入VueRouter对象</span></span><br><span class="line"><span class="keyword">import</span> VueRouter <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//路由模板</span></span><br><span class="line"><span class="keyword">import</span> Layout <span class="keyword">from</span> <span class="string">&#x27;../components/Layout&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//导入组件</span></span><br><span class="line"><span class="keyword">import</span> Home <span class="keyword">from</span> <span class="string">&#x27;../views/Home.vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> Login <span class="keyword">from</span> <span class="string">&#x27;../views/Login.vue&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//2.在VUE实例中注册路由组件</span></span><br><span class="line">Vue.use(VueRouter)</span><br><span class="line"></span><br><span class="line"><span class="comment">//3.创建路由规则</span></span><br><span class="line"><span class="keyword">const</span> routes = [</span><br><span class="line">  &#123;</span><br><span class="line">    path:<span class="string">&#x27;/&#x27;</span>,</span><br><span class="line">    component:Layout,</span><br><span class="line">    children:[</span><br><span class="line">      &#123;</span><br><span class="line">        path:<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        name:<span class="string">&#x27;Home&#x27;</span>,</span><br><span class="line">        component:Home</span><br><span class="line">      &#125;,&#123;</span><br><span class="line">        path:<span class="string">&#x27;about&#x27;</span>,  <span class="comment">// 可以使用相对路径，相对父路由的路径</span></span><br><span class="line">        name:<span class="string">&#x27;About&#x27;</span>,</span><br><span class="line">        component: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="comment">/* webpackChunkName: &quot;about&quot; */</span> <span class="string">&#x27;../views/About.vue&#x27;</span>)</span><br><span class="line">      &#125;,&#123;</span><br><span class="line">        <span class="comment">//动态路由</span></span><br><span class="line">        path:<span class="string">&#x27;/detail/:id&#x27;</span>, <span class="comment">// 也可以使用绝对路径</span></span><br><span class="line">        name:<span class="string">&#x27;Detail&#x27;</span>,</span><br><span class="line">        <span class="comment">//开启props可以在Detail组件中，通过props拿到URL中的参数</span></span><br><span class="line">        props:<span class="literal">true</span>,</span><br><span class="line">        component:<span class="function">()=&gt;</span><span class="keyword">import</span>(<span class="comment">/* webpackChunkName:&#x27;detail&#x27; */</span><span class="string">&#x27;../views/Detail.vue&#x27;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    path:<span class="string">&#x27;/login&#x27;</span>,</span><br><span class="line">    name:<span class="string">&#x27;Login&#x27;</span>,</span><br><span class="line">    component:Login</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment">//4.创建VueRouter实例--router对象</span></span><br><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> VueRouter(&#123;</span><br><span class="line">  mode:<span class="string">&#x27;history&#x27;</span>,</span><br><span class="line">  routes</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> router</span><br></pre></td></tr></table></figure>
+
+<p><em>main.js</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> router <span class="keyword">from</span> <span class="string">&#x27;./router&#x27;</span></span><br><span class="line"><span class="comment">//5.在Vue实例中注册router对象</span></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  router,</span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App)</span><br><span class="line">&#125;).$mount(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><em>App.vue</em></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;nav&quot;</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- 7.router-link组件，用于创建链接 --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">router-link</span> <span class="attr">to</span>=<span class="string">&quot;/&quot;</span>&gt;</span>Home<span class="tag">&lt;/<span class="name">router-link</span>&gt;</span> |</span><br><span class="line">      <span class="tag">&lt;<span class="name">router-link</span> <span class="attr">to</span>=<span class="string">&quot;/about&quot;</span>&gt;</span>About<span class="tag">&lt;/<span class="name">router-link</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">     <span class="comment">&lt;!-- 6.router-view 组件，用于组件占位 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">router-view</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="vue-router4的基本使用"><a href="#vue-router4的基本使用" class="headerlink" title="vue-router4的基本使用"></a>vue-router4的基本使用</h1><p><a target="_blank" rel="noopener" href="https://next.router.vuejs.org/guide/#router-view">官方文档看这里</a></p>
+<p><strong>在vue3中使用vue-router4</strong></p>
+<ol>
+<li>引入<code>vue-router</code>的<code>createRouter</code>方法及<code>createWebHistory</code>方法。</li>
+<li>规定一些路由规则，即路由与组件的对应关系。</li>
+<li>创建router实例，并为router添加路由规则</li>
+<li>在创建Vue实例的过程中注册router对象</li>
+<li><code>vue-router</code> 暴露的<code>router-view</code>组件，是组件的占位符，当路由匹配时，<code>vue-router</code>加载的组件会替换<code>router-view</code></li>
+<li><code>vue-router</code>暴露的<code>router-link</code>组件，用于创建链接。</li>
+</ol>
+<p><em>router.js</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1.引入vue-router的createRouter方法及createWebHistory方法</span></span><br><span class="line"><span class="keyword">import</span> &#123; createRouter, createWebHistory &#125; <span class="keyword">from</span> <span class="string">&quot;vue-router&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> Home <span class="keyword">from</span> <span class="string">&quot;../views/Home.vue&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//2.规定路由规则</span></span><br><span class="line"><span class="keyword">const</span> routes = [</span><br><span class="line">  &#123;</span><br><span class="line">    path: <span class="string">&quot;/&quot;</span>,</span><br><span class="line">    name: <span class="string">&quot;Home&quot;</span>,</span><br><span class="line">    component: Home</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    path: <span class="string">&quot;/about&quot;</span>,</span><br><span class="line">    name: <span class="string">&quot;About&quot;</span>,</span><br><span class="line">    component: <span class="function">() =&gt;</span></span><br><span class="line">      <span class="keyword">import</span>(<span class="comment">/* webpackChunkName: &quot;about&quot; */</span> <span class="string">&quot;../views/About.vue&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment">//3.创建路由实例</span></span><br><span class="line"><span class="keyword">const</span> router = createRouter(&#123;</span><br><span class="line">  history: createWebHistory(process.env.BASE_URL),</span><br><span class="line">  routes</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> router;</span><br></pre></td></tr></table></figure>
+
+<p><em>main.js</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&quot;vue&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&quot;./App.vue&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> router <span class="keyword">from</span> <span class="string">&quot;./router&quot;</span>;</span><br><span class="line"></span><br><span class="line">createApp(App)</span><br><span class="line">  .use(router)</span><br><span class="line">  .mount(<span class="string">&quot;#app&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Vue-use"><a href="#Vue-use" class="headerlink" title="Vue.use()"></a>Vue.use()</h1><p><code>Vue.use</code>的作用是注册组件，接收一个参数。</p>
+<p>若参数是函数，<code>Vue.use()</code>内部直接执行函数来注册组件。</p>
+<p>若参数是对象，<code>Vue.use()</code>则执行对象的<code>install</code>方法来注册组件</p>
+<h1 id="路由规则"><a href="#路由规则" class="headerlink" title="路由规则"></a>路由规则</h1><p>定义一个数组，数组中存储一些路由规则的对象。</p>
+<p>路由组件对象相应的路径，当路径发生变化时，会加载对应的组件。</p>
+<h1 id="创建Vue实例的过程中注册router对象"><a href="#创建Vue实例的过程中注册router对象" class="headerlink" title="创建Vue实例的过程中注册router对象"></a>创建Vue实例的过程中注册router对象</h1><p>当我们创建Vue实例的时候，配置router选项，会给vue实例注册<code>$router</code>和<code>$route</code>两个属性。</p>
+<p><code>$route</code>:是路由规则，存储了当前路由的数据。</p>
+<p><code>$router</code>:是路由对象，路由对象提供与路由相关的方法如<code>$router.push()</code>, <code>$router.replace()</code>, <code>$router.go()</code>等</p>
+<p><code>$router.currentRoute</code>是当前路由规则，当不方便拿到<code>$route</code>时，可以通过<code>$router.currentRoute</code>拿到当前路由规则。</p>
+<h1 id="动态路由"><a href="#动态路由" class="headerlink" title="动态路由"></a>动态路由</h1><p>动态路由，通过占位来匹配路由中变化的部分。</p>
+<p>当动态路由开启props可以在Detail组件中，通过props拿到URL中的参数</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">  name:<span class="string">&#x27;Detail&#x27;</span>,</span></span><br><span class="line"><span class="javascript">  props:[<span class="string">&#x27;id&#x27;</span>]</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>当未开启props时，可以通过 <code>$route.params.id</code>来获取URL中的参数</p>
+<h1 id="路由嵌套"><a href="#路由嵌套" class="headerlink" title="路由嵌套"></a>路由嵌套</h1><p>提取公共模板到<code>Layout.vue</code>组件中，在Layout组件中之使用<code>router-view</code>来占位变化的组件。</p>
+<p>在路由规则配置中，子路由path配置可以是相对路径也可以是绝对路径。</p>
+<h1 id="编程式导航"><a href="#编程式导航" class="headerlink" title="编程式导航"></a>编程式导航</h1><ol>
+<li><code>$router.push()</code>:参数接收两种方式</li>
+</ol>
+<ul>
+<li><p>字符串：即要跳转的路由地址</p>
+</li>
+<li><p>对象：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$router.push(&#123;</span><br><span class="line">  name:<span class="string">&#x27;PathName&#x27;</span>,</span><br><span class="line">  params::&#123;</span><br><span class="line">  <span class="comment">//传递路由参数</span></span><br><span class="line">    id:<span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="2">
+<li><p><code>$router.replace()</code>：参数形式与<code>$router.push()</code>相同</p>
+<p>但是，replace方法不会记录本次历史。会改变当前历史。</p>
+</li>
+<li><p><code>$router.go()</code>：跳转到某次记录，参数可以是负数（后退），也可以是正数（前进）</p>
+</li>
+</ol>
+<h1 id="Hash和History模式的区别"><a href="#Hash和History模式的区别" class="headerlink" title="Hash和History模式的区别"></a>Hash和History模式的区别</h1><h2 id="表现形式"><a href="#表现形式" class="headerlink" title="表现形式"></a>表现形式</h2><ul>
+<li>hash：<code>https://www.example.com/#/test?id=1234</code></li>
+<li>history：<code>https://www.example.com/test/1234</code></li>
+</ul>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p><strong>hash模式</strong>基于锚点，以及<code>onhashchange</code>事件修改页面。</p>
+<p>当地址发生变化时，触发<code>onhashchange</code>事件，根据锚点不同，呈现不同的组件到页面。</p>
+<p><strong>history模式</strong>是基于H5的<code>History API</code>，实现客户端路由。</p>
+<ul>
+<li><code>history.pushState()</code>,IE 10以后才支持，只修改路径，记录到历史，不向服务器发送请求</li>
+<li><code>history.replaceState()</code>，修改路径，不记录到历史，不向服务器发送请求</li>
+</ul>
+<p>通过调用<code>history.pushState</code>方法改变地址栏，并将当前地址记录到浏览历史中。</p>
+<p>监听<code>popstate</code>事件，当点击浏览器前进、后退按钮时，调用<code>history.back()</code>和<code>history.forward()</code>方法时才会触发<code>popstate</code>事件。</p>
+<p>当地址改变之后，根据当前路由地址找到相应的组件，重新进行渲染。</p>
+<h2 id="服务端支持"><a href="#服务端支持" class="headerlink" title="服务端支持"></a>服务端支持</h2><p><strong>hash模式</strong>不需要服务端支持。</p>
+<p><strong>history模式</strong>需要服务端支持。</p>
+<blockquote>
+<p>history模式，使用前端路由，路由发生变化时，不想服务端发送请求。</p>
+<p>当页面刷新时，想服务端发送请求，导致页面找不到。</p>
+<p>所以，需要在想服务端发送请求，找不到页面时，返回vue的index页面，再由前端路由控制页面显示。</p>
+</blockquote>
+<h1 id="History-模式服务端支持"><a href="#History-模式服务端支持" class="headerlink" title="History 模式服务端支持"></a>History 模式服务端支持</h1><p><strong>node服务器配置</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>)</span><br><span class="line"><span class="comment">//处理history模式的模块</span></span><br><span class="line"><span class="keyword">const</span> history = <span class="built_in">require</span>(<span class="string">&#x27;connect-history-api-fallback&#x27;</span>)</span><br><span class="line"><span class="comment">//express</span></span><br><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express()</span><br><span class="line"><span class="comment">//注册处理history模式的中间件</span></span><br><span class="line">app.use(history())</span><br><span class="line"><span class="comment">//注册处理静态资源的中间件，网站根目录</span></span><br><span class="line">app.use(express.static(path.join(__dirname,<span class="string">&#x27;../web&#x27;</span>)))</span><br><span class="line"></span><br><span class="line"><span class="comment">//开启服务器</span></span><br><span class="line">app.listen(<span class="number">3000</span>,<span class="function">()=&gt;</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;服务器开启，端口：3000&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>nginx环境</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	listen	80;</span><br><span class="line">	server_name	localhost;</span><br><span class="line">	</span><br><span class="line">	location &#x2F;&#123;</span><br><span class="line">		root	html;</span><br><span class="line">		index	index.html	index.htm;</span><br><span class="line">		try_files $uri	$uri&#x2F;	&#x2F;index.html; # 尝试访问文件</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/VUE/">#
+                                VUE</a>
+                        
+                            <a href="/tags/Vue-Router/">#
+                                Vue-Router</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/16/VUE/vue-router2/">Vue-Router 模拟实现</a>
+            
+            
+                <a class="next" rel="next" href="/2020/12/15/VUE/vue-base/">VUE框架基础知识</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

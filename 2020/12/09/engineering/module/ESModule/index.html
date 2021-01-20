@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>前端工程化7-模块化开发-ES Module | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">前端工程化7-模块化开发-ES Module</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-12-09</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/">前端工程化</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="语法特性"><a href="#语法特性" class="headerlink" title="语法特性"></a>语法特性</h1><ol>
+<li>ES Module自动采用严格模式，或略”use strict”</li>
+<li>每个ES Module都是运行在自己的私有作用域中</li>
+<li>ES Module是通过”CORS”进行文件请求的，需要请求资源服务端在响应头中添加对应的”CORS”标头。</li>
+<li>ES Module不支持文件的形式访问，需要启动http server的形式来让yem工作起来</li>
+<li>ES Module中的<code>script</code>标签会延迟执行脚本—相当于<code>defer</code>属性</li>
+</ol>
+<h1 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h1><h2 id="1-应用模块到HTML"><a href="#1-应用模块到HTML" class="headerlink" title="1. 应用模块到HTML"></a>1. 应用模块到HTML</h2><p>通过给<code>script</code>标签添加<code>type = &quot;module&quot;</code>属性，来声明这个脚本是一个模块</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;module&quot;</span> <span class="attr">src</span>=<span class="string">&quot;main.mjs&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;module&quot;</span>&gt;</span></span><br><span class="line"><span class="javascript">	<span class="built_in">console</span>.log(<span class="string">&#x27;this is a mudule&#x27;</span>)</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-导出模块的功能"><a href="#2-导出模块的功能" class="headerlink" title="2. 导出模块的功能"></a>2. 导出模块的功能</h2><blockquote>
+<p>ES Module 模块可以多次导出, 且有多种导出方式</p>
+</blockquote>
+<p><strong>注意</strong>，单个导出和统一导出，只是对模块成员进行导出的方式不同，若进行了单个导出就不能再进行统一导出了。否则会出现<strong>重复导出的错误</strong></p>
+<p>而默认导出是指模块文件的默认导出，若对模块成员进行了单个或统一导出，仍然可以规定其为模块默认导出项。</p>
+<p>若模块仅需要导出一个模块成员，可以使用<strong>单个导出 + 默认导出</strong>的方式</p>
+<p>若模块需要导出多个模块成员，建议使用<strong>统一导出</strong>的方式</p>
+<p><strong>不建议</strong>使用 <strong>单个导出 + 统一导出</strong>的组合导出方式，因为这种方式不利于代码的可维护性和可读性</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//module.js</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="string">&quot;es module&quot;</span></span><br><span class="line"><span class="keyword">const</span> fooFun = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;foo function&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//单个导出函数</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">hello</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//单个导出变量</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> name = <span class="string">&quot;name string&quot;</span></span><br><span class="line"><span class="comment">//单个导出类</span></span><br><span class="line"><span class="keyword">export</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>()&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;class&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//统一导出</span></span><br><span class="line"><span class="keyword">export</span> &#123; foo,fooFun &#125;</span><br><span class="line"><span class="comment">//默认导出 foo</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> foo</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-导入模块功能"><a href="#3-导入模块功能" class="headerlink" title="3. 导入模块功能"></a>3. 导入模块功能</h2><blockquote>
+<p>1.导入模块必须使用完整的文件扩展名</p>
+<p>2.引用相对路径时，不能省略<code>./</code>，否则会解析为加载第三方模块</p>
+<p>3.可以使用绝对路径引用</p>
+<p>4.可以直接引用网络文件（完整的url）</p>
+<p>5.可以通过<code>impirt &#123;&#125; from &#39;./module.js&#39;</code>来执行模块，而不提取模块中的成员</p>
+<p>​    简写为<code> import &#39;./module.js&#39;</code></p>
+</blockquote>
+<p><strong>导入默认成员</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//app.js</span></span><br><span class="line"><span class="keyword">import</span> defaultPerson <span class="keyword">from</span> <span class="string">&quot;./module.js&quot;</span></span><br><span class="line"><span class="built_in">console</span>.log(defaultPerson) <span class="comment">// 输出“es module”</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>导入统一导出或单个导出成员</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//app.ja</span></span><br><span class="line"><span class="keyword">import</span> &#123;foo,fooFun,hello,name,Person&#125; <span class="keyword">from</span> <span class="string">&quot;./module.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(foo)  <span class="comment">//输出 es module</span></span><br><span class="line">fooFun()  <span class="comment">//输出 foo function</span></span><br><span class="line">hello()  <span class="comment">//输出 hello</span></span><br><span class="line"><span class="built_in">console</span>.log(name) <span class="comment">//输出 name string</span></span><br><span class="line"><span class="keyword">new</span> Person() <span class="comment">//输出 class</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>多次分别导入默认成员于普通成员</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//app.ja</span></span><br><span class="line"><span class="keyword">import</span> &#123;foo,fooFun,hello,name,Person&#125; <span class="keyword">from</span> <span class="string">&quot;./module.js&quot;</span></span><br><span class="line"><span class="keyword">import</span> defaultPerson <span class="keyword">from</span> <span class="string">&quot;./module.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(defaultPerson) <span class="comment">// 输出“es module”</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(foo)  <span class="comment">//输出 es module</span></span><br><span class="line">fooFun()  <span class="comment">//输出 foo function</span></span><br><span class="line">hello()  <span class="comment">//输出 hello</span></span><br><span class="line"><span class="built_in">console</span>.log(name) <span class="comment">//输出 name string</span></span><br><span class="line"><span class="keyword">new</span> Person() <span class="comment">//输出 class</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>一次性导入默认成员于普通成员</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//app.ja</span></span><br><span class="line"><span class="keyword">import</span> defaultPerson,&#123;foo,fooFun,hello,name,Person&#125; <span class="keyword">from</span> <span class="string">&quot;./module.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//或使用as重命名的方式导入</span></span><br><span class="line"><span class="comment">//import &#123;foo,fooFun,hello,name,Person, default as defaultPerson&#125; from &quot;./module.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(defaultPerson) <span class="comment">// 输出“es module”</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(foo)  <span class="comment">//输出 es module</span></span><br><span class="line">fooFun()  <span class="comment">//输出 foo function</span></span><br><span class="line">hello()  <span class="comment">//输出 hello</span></span><br><span class="line"><span class="built_in">console</span>.log(name) <span class="comment">//输出 name string</span></span><br><span class="line"><span class="keyword">new</span> Person() <span class="comment">//输出 class</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>创建模块对象</strong></p>
+<p>当模块成员特别多时，可以通过<code>*</code>的方式提取模块中的所有成员，再通过<code>as</code>的方式将所有成员全部放在一个对象中.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> mod <span class="keyword">from</span> <span class="string">&#x27;./module.js</span></span><br><span class="line"><span class="string">//mod的属性即为模块的模块成员</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>导入变量文件</strong></p>
+<p>import只能出现在文件最顶层，不能嵌套在if语句中。</p>
+<p>import也不能使用变量文件名</p>
+<p>可以使用<code>import()</code>函数来导入变量文件名或在代码嵌套中使用，该函数返回一个<code>Promise</code>对象.</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//app.js</span></span><br><span class="line"><span class="keyword">let</span> file;</span><br><span class="line"><span class="keyword">if</span>(xxx)&#123;</span><br><span class="line">  file = <span class="string">&quot;module.js&quot;</span></span><br><span class="line">  <span class="keyword">import</span>(file).then(<span class="function"><span class="params">res</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">//res即为模块成员</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-重命名方式"><a href="#4-重命名方式" class="headerlink" title="4. 重命名方式"></a>4. 重命名方式</h2><p>使用<code>as</code>对导出或导入成员进行重命名</p>
+<p>若将导出模块成员重命名为<code>default</code>，即将模块成员作为模块默认导出成员</p>
+<p><strong>导出成员重命名</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//module.js</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="string">&quot;es module&quot;</span></span><br><span class="line"><span class="keyword">const</span> fooFun = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;foo function&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>()&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;Person class&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> &#123; </span><br><span class="line">	foo <span class="keyword">as</span> name, <span class="comment">// 将foo 重命名为name，在导入模块成员时，使用name导入</span></span><br><span class="line">	fooFun <span class="keyword">as</span> funName, <span class="comment">// 将fooFun 重命名为funName，在导入模块成员时，使用funName导入</span></span><br><span class="line">  Person <span class="keyword">as</span> <span class="keyword">default</span> <span class="comment">//Person 重命名为 default，即Person作为模块的默认导出成员</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>导入成员重命名</strong></p>
+<blockquote>
+<p>Person作为模块的默认导出成员，可以作为默认成员导入，也可以通过重命名的方式，作为普通模块成员导入<br>    作为默认成员导入，仅需提供一个名称即可<br>    作为普通成员导入，因为default是一个关键词，所以需要对default进行重命名</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//app.js</span></span><br><span class="line"><span class="comment">//导入模块时，对模块成员进行重命名，</span></span><br><span class="line"><span class="comment">//将name重命名为moduleName，将funName重命名为methods</span></span><br><span class="line"><span class="keyword">import</span> Person,&#123; name <span class="keyword">as</span> moduleName, funName <span class="keyword">as</span> methods, <span class="keyword">default</span> <span class="keyword">as</span> PersonClass &#125; <span class="keyword">from</span> <span class="string">&quot;./modules.js&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//使用模块成员时，使用重命名后的名称</span></span><br><span class="line"><span class="keyword">new</span> Person()</span><br><span class="line"><span class="built_in">console</span>.log(moduleName)</span><br><span class="line">methods()</span><br><span class="line"><span class="keyword">new</span> personClass()</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-合并模块"><a href="#5-合并模块" class="headerlink" title="5.合并模块"></a>5.合并模块</h2><p>想要将模块聚集到一起时，可以将多个子模块聚集到一个父模块。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//main.js</span></span><br><span class="line"><span class="keyword">export</span> &#123; module1 &#125; <span class="keyword">from</span> <span class="string">&quot;./module1&quot;</span></span><br><span class="line"><span class="keyword">export</span> &#123; module2 &#125; <span class="keyword">from</span> <span class="string">&quot;./module2&quot;</span></span><br><span class="line"><span class="keyword">export</span> &#123; module3 &#125; <span class="keyword">from</span> <span class="string">&quot;./module3&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">相当于</span></span><br><span class="line"><span class="comment">  import &#123; module1 &#125; from &quot;./module1&quot;</span></span><br><span class="line"><span class="comment">  import &#123; module2 &#125; from &quot;./module2&quot;</span></span><br><span class="line"><span class="comment">  import &#123; module3 &#125; from &quot;./module3&quot;</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">  export &#123;module1,module2,module3&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//app.js</span></span><br><span class="line"><span class="keyword">import</span> &#123;module1,module2,module3&#125; <span class="keyword">from</span> <span class="string">&quot;./main.js&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="特殊说明"><a href="#特殊说明" class="headerlink" title="特殊说明"></a>特殊说明</h1><ol>
+<li><p><code>export &#123; xx1,xx2 &#125;</code> 的语法并不是字面量的导出，<code>import &#123; xx1,xx2 &#125; from &quot;xx.js&quot;</code>也不是解构赋值。</p>
+<p><code>export default &#123; &#125;</code> 导出的是一个对象，表示模块的默认导出成员是一个对象</p>
+</li>
+<li><p>对外导出成员时，导出的是引用关系。模块导入是地址引用，不是拷贝复制。</p>
+</li>
+<li><p>导入的模块成员是只读的。不能修改导入的模块成员</p>
+</li>
+</ol>
+<h1 id="兼容处理–polyfill"><a href="#兼容处理–polyfill" class="headerlink" title="兼容处理–polyfill"></a>兼容处理–polyfill</h1><blockquote>
+<p>可以在浏览器中直接支持ES Module中的大多数特性</p>
+</blockquote>
+<h2 id="在浏览器中直接"><a href="#在浏览器中直接" class="headerlink" title="在浏览器中直接"></a>在浏览器中直接</h2><p><a target="_blank" rel="noopener" href="https://github.com/ModuleLoader/browser-es-module-loader"><code>browser-es-module-loader</code></a>：在浏览器中直接</p>
+<p>为了避免支持ESModule的浏览器重复执行，对polyfill的引用添加<code>nomdule</code>属性</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">nomodule</span> <span class="attr">src</span>=<span class="string">&quot;polyfill.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">import</span> &#123; foo &#125; <span class="keyword">from</span> <span class="string">&#x27;./module.js&#x27;</span></span></span><br><span class="line"><span class="javascript">  <span class="built_in">console</span>.log(foo)</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这种方式需要在浏览器运行时编译代码，效率低，正式环境不要使用</p>
+<h2 id="通过编译的方式使用"><a href="#通过编译的方式使用" class="headerlink" title="通过编译的方式使用"></a>通过编译的方式使用</h2><p><a target="_blank" rel="noopener" href="https://polyfill.io/v3/">polyfill</a></p>
+<p>可以使用gulp、webpack等方式编译代码后，在浏览器中使用</p>
+<h1 id="Node对ES-Module的支持"><a href="#Node对ES-Module的支持" class="headerlink" title="Node对ES Module的支持"></a>Node对ES Module的支持</h1><blockquote>
+<p>目前，Node已经提供对ES Module支持的测试版本了</p>
+<p>Node 版本需要 <code>&gt;=8.5.0</code></p>
+</blockquote>
+<h2 id="编译方法"><a href="#编译方法" class="headerlink" title="编译方法"></a>编译方法</h2><p>在node中使用ES Module时，需要添加<code>--experimental-modules</code>的参数，表明启用ES Module的实验特性</p>
+<p><strong>注意</strong>，若没有进行配置，文件拓展名要修改为<code>mjs</code></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node -<span class="literal">-experimental</span><span class="literal">-modules</span> test.mjs</span><br></pre></td></tr></table></figure>
+
+<p><strong>在package.json</strong>中配置<code>type</code>为<code>module</code>后，ES Module 模块的拓展名可以使用<code>js</code></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;type&quot;</span>:<span class="string">&quot;module&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行<code>node --experimental-modules app.js </code>是可以执行的。</p>
+<p>若此时想要使用commonJS模块，需要将commonJS文件的后缀修改为<code>cjs</code></p>
+<h2 id="可以载入node原生模块与第三方模块"><a href="#可以载入node原生模块与第三方模块" class="headerlink" title="可以载入node原生模块与第三方模块"></a>可以载入node原生模块与第三方模块</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> fs <span class="keyword">from</span> <span class="string">&quot;fs&quot;</span></span><br><span class="line"><span class="keyword">import</span> _ <span class="keyword">from</span> <span class="string">&quot;loadsh&quot;</span></span><br><span class="line">fs.writeFileSync(<span class="string">&#x27;./foo.txt&#x27;</span>,<span class="string">&#x27;es module work&#x27;</span>)</span><br><span class="line"><span class="built_in">console</span>.log(_.cameCase(<span class="string">&#x27;ES Module&#x27;</span>))</span><br></pre></td></tr></table></figure>
+
+<p><strong>第三方模块需要使用默认导入的方式导入默认成员</strong></p>
+<p><strong>对于node原生模块，可以使用提取的方式提取对应模块</strong>(官方内置模块做了兼容)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;writeFileSync&#125; <span class="keyword">from</span> <span class="string">&quot;fs&quot;</span></span><br><span class="line">writeFileSync(<span class="string">&#x27;./foo.txt&#x27;</span>,<span class="string">&#x27;es module work&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="可以载入CommonJS提供的成员"><a href="#可以载入CommonJS提供的成员" class="headerlink" title="可以载入CommonJS提供的成员"></a>可以载入CommonJS提供的成员</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//common.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  foo:<span class="string">&quot;commonjs export value&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//esmodule.js</span></span><br><span class="line"><span class="keyword">import</span> mod <span class="keyword">from</span> <span class="string">&quot;./common.js&quot;</span></span><br><span class="line"><span class="built_in">console</span>.log(mod) <span class="comment">// 输出：&quot;commonjs export value&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用babel实现低版本node兼容ES-Module"><a href="#使用babel实现低版本node兼容ES-Module" class="headerlink" title="使用babel实现低版本node兼容ES Module"></a>使用babel实现低版本node兼容ES Module</h2><p><strong>安装</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add @babel/node @babel/core @babel/p<span class="built_in">reset-env</span> -<span class="literal">-dev</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>使用</strong><code>@babel/preset-env</code>—-插件集合，包含了最新的js标准中的所有新特性</p>
+<p>直接使用：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn babel<span class="literal">-node</span> app.js -<span class="literal">-presets</span>=@babel/p<span class="built_in">reset-env</span></span><br></pre></td></tr></table></figure>
+
+<p>配置<code>@babel/preset-env</code>后使用，使用preset进行转换配置</p>
+<p>在文件<code>.babelrc</code>中添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;presets&quot;:[&quot;@babel&#x2F;preset-env&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用：<code>yarn babel-node app.js</code></p>
+<p><strong>使用</strong><code>@babel/plugin-transform-module-commonjs</code>—- 具体插件：将ESModule转换为CommonJS</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add plugin<span class="literal">-transform</span><span class="literal">-module</span><span class="literal">-commonjs</span> -<span class="literal">-dev</span></span><br></pre></td></tr></table></figure>
+
+<p>配置<code>@babel/plugin-transform-module-commonjs</code>，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;presets&quot;:[&quot;@babel&#x2F;plugin-transform-module-commonjs&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用：<code>yarn babel-node app.js</code></p>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/">#
+                                前端工程化</a>
+                        
+                            <a href="/tags/%E6%A8%A1%E5%9D%97%E5%8C%96%E5%BC%80%E5%8F%91/">#
+                                模块化开发</a>
+                        
+                            <a href="/tags/ESModule/">#
+                                ESModule</a>
+                        
+                            <a href="/tags/CommonJS/">#
+                                CommonJS</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/10/engineering/webpack/overview/">前端工程化8-Webpack-模块化打包工具</a>
+            
+            
+                <a class="next" rel="next" href="/2020/12/09/engineering/module/overview/">前端工程化6-模块化开发</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

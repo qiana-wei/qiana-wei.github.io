@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>前端工程化3-脚手架实践 | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">前端工程化3-脚手架实践</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-12-07</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/">前端工程化</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>使用node搭建一个简单的脚手架工具实践</p>
+<h1 id="脚手架实现原理"><a href="#脚手架实现原理" class="headerlink" title="脚手架实现原理"></a>脚手架实现原理</h1><p>脚手架实际上就是通过命令行交互，询问用户一些问题，然后将问题的答案结合预设的模板文件，输出映射文件形成项目结构。</p>
+<p>脚手架应用，实际就是一个node cli应用。</p>
+<h1 id="自定义一个小型脚手架工具"><a href="#自定义一个小型脚手架工具" class="headerlink" title="自定义一个小型脚手架工具"></a>自定义一个小型脚手架工具</h1><p>脚手架的需求：</p>
+<ol>
+<li>创建一个简单的vue项目结构</li>
+<li>通过命令行交互询问用户项目名称</li>
+<li>通过命令行询问用户，使用yarn 或npm安装依赖 或 不安装依赖</li>
+<li>若用户选择安装依赖，通过用户询问，是否使用淘宝镜像安装依赖</li>
+</ol>
+<h1 id="搭建过程"><a href="#搭建过程" class="headerlink" title="搭建过程"></a>搭建过程</h1><p><a target="_blank" rel="noopener" href="https://github.com/qiana-wei/qiana-wei.github.io/tree/master/code-example/node-vue-cli">完整项目文件看这里</a></p>
+<ol>
+<li><p>创建脚手架项目目录<code>node-vue-cli</code>,通过<code>yarn init</code>初始化一个<code>package.json</code></p>
+</li>
+<li><p>创建<code>cli.js</code>文件，并在<code>package.json</code>文件中添加<code>bin</code>属性，值为 <code>cli.js</code>。<code>cli.js</code>文件即为脚手架配置文件。</p>
+</li>
+<li><p>node的脚手架配置文件，需添加<code>#!/uer/bin/env node</code>的文件头。先简单添加一个log语句，将cli工具link到全局，执行<code>node-vue-cli</code>,看cli工具是否正常工作。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;node-vue-cli&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yarn link</span><br><span class="line">node-vue-cli</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建模板文件目录<code>templates</code>,并添加项目模板文件。</p>
+</li>
+<li><p>命令行交互，需要使用<code>inquirer</code>模块，安装<code>inquirer</code>模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn add inquirer --dev</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>inquirer.prompt</code>发起命令行交互询问。<code>inquirer.prompt</code>方法接收一个数组，用于配置询问信息。返回值是一个Promise，可以使用then方法获得用户回答的信息，并在then方法结合回答信息执行一些操作，实现项目搭建。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> inquirer = <span class="built_in">require</span>(<span class="string">&quot;inquirer&quot;</span>)</span><br><span class="line"></span><br><span class="line">inquirer.prompt([</span><br><span class="line">  <span class="comment">//question</span></span><br><span class="line">]).then(<span class="function"><span class="params">answer</span>=&gt;</span>&#123;</span><br><span class="line">  <span class="comment">//actions</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>首选询问项目名称，结合模板文件，生成项目结构</p>
+<p>通过<code>path</code>获取<code>templates</code>的目录地址</p>
+<p>通过<code>cwd</code>获取目标目录地址</p>
+<p>通过<code>fs</code>读取<code>templates</code>的目录下所有的文件（<code>fs.readdir</code>），写入文件目标文件(<code>fs.writeFileSync</code>)，创建文件夹(<code>fs.mkdir</code>)</p>
+<p>通过<code>ejs</code>的<code>ejs.renderFile</code>读取文件内容</p>
+</li>
+</ol>
+<p>   <code>fs.readdir</code>,接收两个参数：<strong>templates目录地址</strong>和<strong>回调函数</strong>，回调函数内接收templates目录下所有文件相对于templates目录的相对路径。</p>
+<p>   <code>ejs.renderFile</code>接收三个参数：<strong>文件路径</strong>、<strong>模板替换内容</strong>、<strong>回调函数</strong>，回调函数内接收替换完成的文件内容</p>
+<p>   <strong>首先，我们先写一个文件渲染的函数</strong>，因为我们的templates文件夹下有嵌套文件夹，所以需要递归去渲染文件。</p>
+   <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 递归读取templates下所有文件</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;string&#125;</span> </span>dirPath 模板文件路径</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;string&#125;</span> </span>destPath 输出文件路径</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Object&#125;</span> </span>answer 用户回答</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">let</span> renderFiles = <span class="function"><span class="keyword">function</span> (<span class="params">dirPath, destPath, answer</span>) </span>&#123;</span><br><span class="line">  <span class="comment">//获取文件列表</span></span><br><span class="line">  fs.readdir(dirPath, <span class="function">(<span class="params">err, files</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err</span><br><span class="line">    files.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">//更新文件路径</span></span><br><span class="line">      <span class="keyword">let</span> filePath = path.join(dirPath, item)</span><br><span class="line">      <span class="comment">//检查文件信息</span></span><br><span class="line">      fs.stat(filePath, <span class="function">(<span class="params">err, stats</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (err) <span class="keyword">throw</span> err</span><br><span class="line">        <span class="keyword">if</span> (stats.isFile()) &#123;</span><br><span class="line">          <span class="comment">//如果是文件文件</span></span><br><span class="line">          ejs.renderFile(filePath, answer, <span class="function">(<span class="params">err, result</span>) =&gt;</span> &#123;</span><br><span class="line">              fs.writeFileSync(path.join(destPath, item), result)</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">//是文件夹，创建文件夹。并递归执行读取文件操作</span></span><br><span class="line">          <span class="keyword">let</span> destDirPath = path.join(destPath, item)</span><br><span class="line">          fs.mkdir(destDirPath, <span class="function">(<span class="params">err</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (err) <span class="keyword">throw</span> err</span><br><span class="line">            renderFiles(filePath, destDirPath, answer)</span><br><span class="line">          &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>   <strong>然后编写询问项目名称与是否安装依赖的交互</strong>，并渲染开始文件。</p>
+   <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&quot;path&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> ejs = <span class="built_in">require</span>(<span class="string">&quot;ejs&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> inquirer = <span class="built_in">require</span>(<span class="string">&quot;inquirer&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//.....renderFiles函数</span></span><br><span class="line"></span><br><span class="line">inquirer.prompt([</span><br><span class="line">  &#123;</span><br><span class="line">    type: <span class="string">&quot;input&quot;</span>,</span><br><span class="line">    name: <span class="string">&quot;name&quot;</span>,</span><br><span class="line">    message: <span class="string">&quot;项目名称&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    type: <span class="string">&quot;list&quot;</span>,</span><br><span class="line">    name: <span class="string">&quot;install&quot;</span>,</span><br><span class="line">    message: <span class="string">&quot;是否安装依赖&quot;</span>,</span><br><span class="line">    choices:[<span class="string">&#x27;yarn&#x27;</span>,<span class="string">&#x27;npm&#x27;</span>,<span class="string">&#x27;none&#x27;</span>]</span><br><span class="line">  &#125;</span><br><span class="line">]).then(<span class="function"><span class="params">answer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> tempPath = path.join(__dirname, <span class="string">&quot;templates&quot;</span>)</span><br><span class="line">  <span class="keyword">const</span> destPath = process.cwd()</span><br><span class="line">  renderFiles(tempPath, destPath, answer)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>   因为是否安装依赖与是否使用淘宝镜像是有先后关系的，所有在then函数中返回一个新的Promise，用于询问是否使用淘宝镜像,并将前两个交互的答案合并，传给后续then方法</p>
+   <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&quot;path&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> ejs = <span class="built_in">require</span>(<span class="string">&quot;ejs&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> inquirer = <span class="built_in">require</span>(<span class="string">&quot;inquirer&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//.....renderFiles函数</span></span><br><span class="line"></span><br><span class="line">inquirer.prompt([</span><br><span class="line">  &#123;</span><br><span class="line">    type: <span class="string">&quot;input&quot;</span>,</span><br><span class="line">    name: <span class="string">&quot;name&quot;</span>,</span><br><span class="line">    message: <span class="string">&quot;项目名称&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    type: <span class="string">&quot;list&quot;</span>,</span><br><span class="line">    name: <span class="string">&quot;install&quot;</span>,</span><br><span class="line">    message: <span class="string">&quot;是否安装依赖&quot;</span>,</span><br><span class="line">    choices:[<span class="string">&#x27;yarn&#x27;</span>,<span class="string">&#x27;npm&#x27;</span>,<span class="string">&#x27;none&#x27;</span>]</span><br><span class="line">  &#125;</span><br><span class="line">]).then(<span class="function"><span class="params">answer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> tempPath = path.join(__dirname, <span class="string">&quot;templates&quot;</span>)</span><br><span class="line">  <span class="keyword">const</span> destPath = process.cwd()</span><br><span class="line">  renderFiles(tempPath, destPath, answer)</span><br><span class="line">  <span class="keyword">if</span>(answer.install == <span class="string">&quot;none&quot;</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span>=&gt;</span>&#123;</span><br><span class="line">    inquirer.prompt([</span><br><span class="line">      &#123;</span><br><span class="line">        type: <span class="string">&quot;confirm&quot;</span>,</span><br><span class="line">        name: <span class="string">&quot;ali&quot;</span>,</span><br><span class="line">        message: <span class="string">&quot;是否使用淘宝镜像&quot;</span>,</span><br><span class="line">        <span class="keyword">default</span>:<span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]).then(<span class="function"><span class="params">answer2</span>=&gt;</span>&#123;</span><br><span class="line">      resolve(&#123;...answer,...answer2&#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">anster</span>=&gt;</span>&#123;</span><br><span class="line">  <span class="comment">//处理answer</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li><p>处理执行安装依赖</p>
+<p>在node中，可以使用子进程来实现shell命令执行。</p>
+<p>引入子进程依赖<code>const cProcess = require(&quot;chile-process&quot;)</code></p>
+<p>使用子进程<code>exce(&lt;shell cmd&gt;,callback)</code>方法，实现依赖安装</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env node</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> cProcess = <span class="built_in">require</span>(<span class="string">&#x27;child_process&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> inquirer = <span class="built_in">require</span>(<span class="string">&quot;inquirer&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&quot;path&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&quot;fs&quot;</span>)</span><br><span class="line"><span class="keyword">const</span> ejs = <span class="built_in">require</span>(<span class="string">&quot;ejs&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//....renderFiles</span></span><br><span class="line"></span><br><span class="line">inquirer.prompt([</span><br><span class="line">  &#123;</span><br><span class="line">    type: <span class="string">&quot;input&quot;</span>,</span><br><span class="line">    name: <span class="string">&quot;name&quot;</span>,</span><br><span class="line">    message: <span class="string">&quot;项目名称&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    type: <span class="string">&quot;list&quot;</span>,</span><br><span class="line">    name: <span class="string">&quot;install&quot;</span>,</span><br><span class="line">    message: <span class="string">&quot;是否安装依赖&quot;</span>,</span><br><span class="line">    choices:[<span class="string">&#x27;yarn&#x27;</span>,<span class="string">&#x27;npm&#x27;</span>,<span class="string">&#x27;none&#x27;</span>]</span><br><span class="line">  &#125;</span><br><span class="line">]).then(<span class="function"><span class="params">answer</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> tempPath = path.join(__dirname, <span class="string">&quot;templates&quot;</span>)</span><br><span class="line">  <span class="keyword">const</span> destPath = process.cwd()</span><br><span class="line">  renderFiles(tempPath, destPath, answer)</span><br><span class="line">  <span class="keyword">if</span>(answer.install == <span class="string">&quot;none&quot;</span>) <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span>=&gt;</span>&#123;</span><br><span class="line">    inquirer.prompt([</span><br><span class="line">      &#123;</span><br><span class="line">        type: <span class="string">&quot;confirm&quot;</span>,</span><br><span class="line">        name: <span class="string">&quot;ali&quot;</span>,</span><br><span class="line">        message: <span class="string">&quot;是否使用淘宝镜像&quot;</span>,</span><br><span class="line">        <span class="keyword">default</span>:<span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]).then(<span class="function"><span class="params">answer2</span>=&gt;</span>&#123;</span><br><span class="line">      resolve(&#123;...answer,...answer2&#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">  </span><br><span class="line">&#125;).then(<span class="function"><span class="params">answer</span>=&gt;</span>&#123;</span><br><span class="line">  <span class="comment">//不需要安装依赖</span></span><br><span class="line">  <span class="keyword">if</span>(!answer) <span class="keyword">return</span></span><br><span class="line">	<span class="comment">//拼装命令</span></span><br><span class="line">  shellCwd =  <span class="string">`<span class="subst">$&#123;answer.install == <span class="string">&quot;yarn&quot;</span> ? answer.install : answer.install + <span class="string">&#x27; install&#x27;</span>&#125;</span> <span class="subst">$&#123;answer.ali ? <span class="string">&quot;--registry=https://registry.npm.taobao.org&quot;</span>: <span class="string">&quot;&quot;</span>&#125;</span>`</span></span><br><span class="line">  </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;执行命令:&quot;</span>+shellCwd)</span><br><span class="line">	<span class="comment">//执行命令</span></span><br><span class="line">  <span class="keyword">const</span> install = cProcess.exec(shellCwd,<span class="function">(<span class="params">err, stdout, stderr</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(err) <span class="keyword">throw</span> err</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="comment">//显示命令执行详情</span></span><br><span class="line">  install.stdout.on(<span class="string">&quot;data&quot;</span>,<span class="function"><span class="params">data</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="测试使用"><a href="#测试使用" class="headerlink" title="测试使用"></a>测试使用</h1><ol>
+<li>使用<code>yarn link</code>将cli命令link到全局</li>
+<li>新建项目目录，在项目目录中使用<code>node-vue-cli</code>,回答命令行交互问题，自动执行模板文件下载与开发依赖安装。</li>
+<li>执行<code>yarn serve</code>测试项目是否正常运行</li>
+</ol>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/">#
+                                前端工程化</a>
+                        
+                            <a href="/tags/%E8%84%9A%E6%89%8B%E6%9E%B6%E5%B7%A5%E5%85%B7/">#
+                                脚手架工具</a>
+                        
+                            <a href="/tags/node-cli/">#
+                                node cli</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/08/engineering/gulp/">前端工程化4-自动化构建-Gulp</a>
+            
+            
+                <a class="next" rel="next" href="/2020/12/07/algorithm/LeetCodeEn-1/">每日算法-LeetCodeEnWeekChallenge1</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

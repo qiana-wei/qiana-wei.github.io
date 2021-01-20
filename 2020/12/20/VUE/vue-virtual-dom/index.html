@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>VUE-虚拟Dom | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">VUE-虚拟Dom</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-12-20</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/VUE/">VUE</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="什么是虚拟DOM？"><a href="#什么是虚拟DOM？" class="headerlink" title="什么是虚拟DOM？"></a>什么是虚拟DOM？</h1><p>虚拟Dom（Virtual DOM）是由普通的JS对象描述的DOM对象。因为不是真实的DOM，所以称为虚拟DOM。</p>
+<h1 id="为什么使用虚拟DOM？"><a href="#为什么使用虚拟DOM？" class="headerlink" title="为什么使用虚拟DOM？"></a>为什么使用虚拟DOM？</h1><p>真实Dom的对象成员特别多，创建一个Dom的成本是非常高的。</p>
+<p>使用虚拟Dom来描述真实Dom，仅需要创建几个属性，创建虚拟DOM的开销要小于真实DOM。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  sel: <span class="string">&quot;div&quot;</span>, <span class="comment">//描述标签</span></span><br><span class="line">  data: &#123;&#125;,  <span class="comment">//节点数据</span></span><br><span class="line">  children: <span class="literal">undefined</span>,  <span class="comment">//子节点，与text属性互斥</span></span><br><span class="line">  text: <span class="string">&quot;Hello virtual Dom&quot;</span>, <span class="comment">// 标签内的文本，与children互斥</span></span><br><span class="line">  elm: <span class="literal">undefined</span>, <span class="comment">//记录VNode对应的真实Dom</span></span><br><span class="line">  key: <span class="literal">undefined</span> <span class="comment">//用作优化</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>手动操作DOM比较麻烦，随着项目的复杂化，DOM操作的复杂度提升，为了简化DOM操作，出现了各种MVVM、MVC框架来解决视图和状态树同步的问题。</p>
+<p>为了简化视图的操作，我们还可以使用模板引擎，但是模板引擎不能解决跟踪状态变化的问题，于是出现了虚拟DOM。</p>
+<p>虚拟DOM的好处是当状态发生变化时，不需要立即更新DOM，只需要创建一个虚拟DOM树来描述DOM，虚拟DOM内部通过diff更新DOM变化的部分。</p>
+<p><strong>虚拟DOM最终都需要去操作真实的DOM，虚拟DOM性能的优化肯定比不上真实DOM性能的优化，</strong>但是，通过的虚拟DOM操作，能够更简便的去操作DOM，更精准的去操作DOM。</p>
+<p>同时，虚拟DOM<strong>接受 Parser 解析转化</strong>，使很多事情可以在编译阶段完成，比如xss攻击、合并DOM操作、跨平台等。</p>
+<h1 id="虚拟DOM的作用"><a href="#虚拟DOM的作用" class="headerlink" title="虚拟DOM的作用"></a>虚拟DOM的作用</h1><ul>
+<li>维护视图和状态的关系</li>
+<li>复杂视图情况下，提升渲染性能</li>
+<li>为开发提供更多可能，处理渲染DOM以外，还可以实现SSR（nuxt，next），原生应用（Weex，React Native）、小程序（mpvue，uni-app）等。</li>
+</ul>
+<h1 id="VUE使用的虚拟DOM"><a href="#VUE使用的虚拟DOM" class="headerlink" title="VUE使用的虚拟DOM"></a>VUE使用的虚拟DOM</h1><p>Vue2.x内部使用的虚拟DOM是改造的<a href="/2020/12/21/VUE/snabbdom/">snabbdom</a>。</p>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/VUE/">#
+                                VUE</a>
+                        
+                            <a href="/tags/VUE-%E8%99%9A%E6%8B%9FDom/">#
+                                VUE-虚拟Dom</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/21/VUE/snabbdom/">snabbdom-最开的virtual DOM 之一</a>
+            
+            
+                <a class="next" rel="next" href="/2020/12/18/VUE/vue-response2/">VUE-响应式原理--模拟一个最小版本的vue</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

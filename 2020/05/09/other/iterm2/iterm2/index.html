@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>iTerm2 配置 | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">iTerm2 配置</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-05-09</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/iTerm2/">iTerm2</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="一-安装-iTerm2"><a href="#一-安装-iTerm2" class="headerlink" title="一. 安装 iTerm2"></a>一. 安装 iTerm2</h1><ol>
+<li>直接在官网上<a target="_blank" rel="noopener" href="https://iterm2.com/">http://iterm2.com/</a> 下载并安装</li>
+<li>使用brew安装</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew tap caskroom/cask</span><br><span class="line">brew cask install iterm2</span><br></pre></td></tr></table></figure>
+
+<h1 id="二-安装oh-my-zsh"><a href="#二-安装oh-my-zsh" class="headerlink" title="二. 安装oh-my-zsh"></a>二. 安装oh-my-zsh</h1><p>git地址： <a target="_blank" rel="noopener" href="https://github.com/robbyrussell/oh-my-zsh">https://github.com/robbyrussell/oh-my-zsh</a></p>
+<p>使用<code>curl</code> 或 <code>wget</code>安装 (大概是需要翻墙的，终端翻墙和浏览器翻墙不太一样呢。。)</p>
+<p><strong>curl</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>wget</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;</span><br></pre></td></tr></table></figure>
+
+<p>终端翻墙：</p>
+<p>在命令行输入代理命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export https_proxy=http://xxx.xxx.xxx.xxx:xxxx http_proxy=http://1xxx.xxx.xxx.xxx:xxxx all_proxy=socks5://xxx.xxx.xxx.xxx:xxxx</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="三-配置主题"><a href="#三-配置主题" class="headerlink" title="三. 配置主题"></a>三. 配置主题</h1><ol>
+<li>检查颜色终端配置为xterm-256color</li>
+</ol>
+<blockquote>
+<p>位置：iTerm2-&gt;Preferences-&gt;Profiles-&gt;Terminal-&gt;Report terminal type</p>
+</blockquote>
+<ol start="2">
+<li>下载 <a target="_blank" rel="noopener" href="https://github.com/mbadolato/iTerm2-Color-Schemes">iTerm2-Color-Schemes</a> 配色合集</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">创建文件夹并进入（文件夹名字随意取，位置随意放）</span></span><br><span class="line">mkdir ~/.iterm2 &amp;&amp; cd ~/.iterm2</span><br><span class="line"><span class="meta">#</span><span class="bash"> 下载iTerm2-Color-Schemes</span></span><br><span class="line">git clone https://github.com/mbadolato/iTerm2-Color-Schemes</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>导入配色方案</li>
+</ol>
+<p>iTerm2-&gt;Preferences-&gt;Profiles-&gt;Colors-&gt;Color Presets…-&gt;Import</p>
+<p>选择iTerm2-Color-Schemes 文件夹中schemes下所有配色</p>
+<p>然后就可以选择自己喜欢的配色啦</p>
+<ol start="4">
+<li>安装字体</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew tap homebrew/cask-fonts</span><br><span class="line">proxychains4 brew cask install font-hack-nerd-font   # 需要翻墙</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>设置zsh为默认shell</li>
+</ol>
+<p>检查系统shell</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/shells</span><br><span class="line"><span class="meta">#</span><span class="bash"> 显示</span></span><br><span class="line">/bin/bash</span><br><span class="line">/bin/csh</span><br><span class="line">/bin/ksh</span><br><span class="line">/bin/sh</span><br><span class="line">/bin/tcsh</span><br><span class="line">/bin/zsh</span><br></pre></td></tr></table></figure>
+
+<p>设置zsh为默认shell</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chsh -s $(which zsh)</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>配置主题</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/wiki/themes">各种主题样式在这里</a></p>
+<p>选择喜欢的主题</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.zshrc</span><br><span class="line"><span class="meta">#</span><span class="bash"> 修改 ZSH_THEME,</span></span><br></pre></td></tr></table></figure>
+
+<p>应用修改后的.zshrc</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.zshrc</span><br></pre></td></tr></table></figure>
+
+<p>我配置了一个名为<a target="_blank" rel="noopener" href="https://github.com/bhilburn/powerlevel9k">powerlevel9k</a> 的主题，然后通过<a target="_blank" rel="noopener" href="https://github.com/bhilburn/powerlevel9k#prompt-customization">Prompt Customization</a> 和 <a target="_blank" rel="noopener" href="https://github.com/bhilburn/powerlevel9k/wiki/Stylizing-Your-Prompt">Stylizing Your Prompt</a> 进行一些自己喜欢的配置</p>
+<p><strong>下载</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k</span><br></pre></td></tr></table></figure>
+
+<p><strong>修改zsh主题配置</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.zshrc</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加配置</span></span><br><span class="line">ZSH_THEME=&quot;powerlevel9k/powerlevel9k&quot;</span><br><span class="line">POWERLEVEL9K_MODE=&quot;nerdfont-complete&quot;  # 字体</span><br><span class="line">POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=() # 右边不放元素</span><br><span class="line">POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time ssh dir vcs newline status) # 左边元素：时间、ssh标志、路径、git信息、换行、上一条命令返回的状态</span><br><span class="line">POWERLEVEL9K_PROMPT_ADD_NEWLINE=true # 在新命令前添加换行</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 应用配置</span></span><br><span class="line">source ~/.zshrc</span><br></pre></td></tr></table></figure>
+
+<h1 id="四-zsh插件"><a href="#四-zsh插件" class="headerlink" title="四. zsh插件"></a>四. zsh插件</h1><ol>
+<li>解压缩 extract</li>
+</ol>
+<p>在~/.zshrc中添加extract插件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plugins=(... extract)</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/extract">git地址在这里</a>,支持的解压缩文件也在这里</p>
+<p>解压缩命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x filename.zip</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>高亮命令 zsh-syntax-highlighting</li>
+</ol>
+<p><strong>安装</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install zsh-syntax-highlighting</span><br></pre></td></tr></table></figure>
+
+<p><strong>应用</strong>  <em>路径在安装成功的界面上有哦～</em> </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 添加路径到zshrc中</span></span><br><span class="line">source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh</span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">source</span> zshrc</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>自动提示zsh-autosuggestions</li>
+</ol>
+<p><strong>安装</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install zsh-autosuggestions</span><br></pre></td></tr></table></figure>
+
+<p><strong>应用</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 添加路径到zshrc中</span></span><br><span class="line">source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh</span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">source</span> zshrc</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="五-VSCode-终端字体设置"><a href="#五-VSCode-终端字体设置" class="headerlink" title="五. VSCode 终端字体设置"></a>五. VSCode 终端字体设置</h1><p>在配置完iTerm2之后，打开VSCode命令行会发现Nerd图标字体没有显示</p>
+<p>需要在VSCode中进行配置</p>
+<p>在setting.json中添加字体配置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;terminal.integrated.fontFamily&quot;</span>: <span class="string">&quot;Hack Nerd Font&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;terminal.integrated.fontSize&quot;</span>: <span class="number">12</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就可以显示正常啦</p>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/Mac/">#
+                                Mac</a>
+                        
+                            <a href="/tags/iTerm2/">#
+                                iTerm2</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/05/09/other/git/git/">Git</a>
+            
+            
+                <a class="next" rel="next" href="/2020/05/09/other/mac/new-start/">斥巨资买了Mac本</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

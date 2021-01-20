@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>linux chmod 修改权限 | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">linux chmod 修改权限</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-12-06</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/Shell/">Shell</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="文档权限相关介绍"><a href="#文档权限相关介绍" class="headerlink" title="文档权限相关介绍"></a>文档权限相关介绍</h1><p>Linux对文档权限有着严格的控制，只有对文档有相关操作(像是读、写、执行)的权限时，才可以对文档进行相关操作。</p>
+<p>Linux下文档的操作权限一般包括读:r(read)、写:w(write)、执行:x(execute)</p>
+<p>另外，Linux下的文档还有身份权限，分别是文档所有者(User)、群组(Group)、其他人(Other)。</p>
+<p>只有身份权限与操作权限都达到文档操作权限时，才能能够对文档进行操作。</p>
+<p>执行命令<code>ll</code>查看文档详细信息</p>
+<p><img src="./file-chmod.png" alt="文档权限"></p>
+<h1 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h1><p>从上图我们可以观察到，权限相关信息列共有10个字符。</p>
+<blockquote>
+<p>&lt;文档类型(1)&gt; &lt;文档拥有者权限(3)&gt; &lt;文档所属群组权限(3)&gt; &lt;其他人权限(3)&gt;</p>
+<p>例如<code>-rwxrwxrwx</code>表示 文档类型为 文件，文档拥有者、群组和其他人都对其有读、写和执行的权限。</p>
+</blockquote>
+<h2 id="文档类型"><a href="#文档类型" class="headerlink" title="文档类型"></a>文档类型</h2><p>权限标记的第一个字符表示文档类型</p>
+<ul>
+<li>[d]: 目录</li>
+<li>[-]: 文件</li>
+<li>[l]: 连结档(link file)</li>
+<li>[b]: 装置文件里面的可供储存的接口设备(可随机存取装置)</li>
+<li>[c]: 装置文件里面的串行端口设备，例如键盘、鼠标(一次性读取装置)</li>
+</ul>
+<h2 id="文档权限"><a href="#文档权限" class="headerlink" title="文档权限"></a>文档权限</h2><p> 文档权限标记的后9个字符，以3个为一组，分别表示文档拥有者、群组和其他人对文档的权限。</p>
+<p><code>rwx</code>的权限表示位置不会更换，若没有相关权限，使用<code>-</code>表示没有权限。</p>
+<p>例如<code>-rwxrw-r--</code>表示：</p>
+<ul>
+<li>文档为文件类型</li>
+<li>文档拥有者对其拥有读、写、执行的权限</li>
+<li>群组对其拥有读、写的权限</li>
+<li>其他人对其仅有读的权限</li>
+</ul>
+<h2 id="修改文档权限"><a href="#修改文档权限" class="headerlink" title="修改文档权限"></a>修改文档权限</h2><p>使用<code>chmod</code>（change file mode bits）修改文档权限,可以使用数字或者是符号来进行权限的变更。</p>
+<h3 id="数字类型改变文档权限"><a href="#数字类型改变文档权限" class="headerlink" title="数字类型改变文档权限"></a>数字类型改变文档权限</h3><p>因为对文档的权限分别有读、写、执行。首先，我们先使用数字来表示文档权限</p>
+<ul>
+<li>读(r):4</li>
+<li>写(w):2</li>
+<li>执行(x):1</li>
+<li>无权限：0</li>
+</ul>
+<p>每种身份(User\Group\Other)对应的权限数值为对文档操作权限数值的累加。</p>
+<p>例如<code>-rwxrw-r--</code></p>
+<p>User: <code>rwx</code>:4+2+1 = 7</p>
+<p>Group: <code>rw-</code>:4+2+0 = 6</p>
+<p>Other: <code>r--</code>:4+0+0 =4</p>
+<p>所以，用数字来表示改文档的权限为：764</p>
+<p><strong>数字类型修改文档权限语法</strong>：<code>chmod [-R] &lt;权限数值&gt; &lt;文件或文档名称&gt;</code></p>
+<p>[-R]:可选参数，进行递归的持续变更，即将文件下下所有文档都修改为设定权限‘</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改文件test.js的文档权限文档所有者可读、可写，群组可读，其他人无权限</span></span><br><span class="line"><span class="comment"># -rw-r----- 640</span></span><br><span class="line">chmod <span class="number">640</span> test.js</span><br></pre></td></tr></table></figure>
+
+<h3 id="符号类型改变文档权限"><a href="#符号类型改变文档权限" class="headerlink" title="符号类型改变文档权限"></a>符号类型改变文档权限</h3><p>使用u、g、o、a表示user、group、other，all</p>
+<p>使用r、w、x表示读、写、执行</p>
+<p>使用+、-、=表示添加权限、删除权限、设定权限。在+、-状态下，没有设定的权限状态不会发生变化。</p>
+<p>例如：</p>
+<ol>
+<li>设置文档权限<code>-rwxr-xrw-</code>,</li>
+</ol>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod u=rwx,g=rx,o=rw test.js</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>给group添加写的权限</li>
+</ol>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod g+w text.js</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>给所有身份删除写的权限</li>
+</ol>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod a<span class="literal">-w</span> test.js</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/shell/">#
+                                shell</a>
+                        
+                            <a href="/tags/chmod/">#
+                                chmod</a>
+                        
+                            <a href="/tags/Linux/">#
+                                Linux</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/07/algorithm/LeetCodeEn-1/">每日算法-LeetCodeEnWeekChallenge1</a>
+            
+            
+                <a class="next" rel="next" href="/2020/12/04/engineering/cli/">前端工程化2-脚手架工具</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

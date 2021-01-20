@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>VUE框架基础知识 | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">VUE框架基础知识</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-12-15</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/VUE/">VUE</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="VUE-代码基础结构"><a href="#VUE-代码基础结构" class="headerlink" title="VUE 代码基础结构"></a>VUE 代码基础结构</h1><p>VUE代码有两种渲染方式：</p>
+<ol>
+<li><p>使用模板渲染，vue内部会data中的数据填充到指定的模板中，并把模板渲染到浏览器</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>名称：&#123;&#123;companent.name&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span>&gt;</span>地址：&#123;&#123;companent.address&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./vue.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el:<span class="string">&quot;#app&quot;</span>,</span></span><br><span class="line">    data:&#123;</span><br><span class="line">      companent:&#123;</span><br><span class="line"><span class="javascript">        name:<span class="string">&quot;公司名称&quot;</span>,</span></span><br><span class="line"><span class="javascript">        addrress:<span class="string">&quot;中国上海&quot;</span></span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用render函数，创建虚拟DOM。</p>
+<p>render方法接收一个参数，这个参数是h函数，h函数用于创建虚拟DOM。</p>
+<p>render方法把h函数创建的虚拟DOM返回。</p>
+<p>$mount方法把虚拟DOM转换为真实DOM渲染到浏览器。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./vue.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">    el: <span class="string">&quot;#app&quot;</span>,</span></span><br><span class="line">    data: &#123;</span><br><span class="line">      companent: &#123;</span><br><span class="line"><span class="javascript">        name: <span class="string">&quot;公司名称&quot;</span>,</span></span><br><span class="line"><span class="javascript">        addrress: <span class="string">&quot;中国上海&quot;</span></span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    render(h)&#123;</span><br><span class="line"><span class="javascript">      <span class="keyword">return</span>  h(<span class="string">&#x27;div&#x27;</span>, [</span></span><br><span class="line"><span class="javascript">        h(<span class="string">&#x27;p&#x27;</span>, <span class="string">`名称：<span class="subst">$&#123;<span class="built_in">this</span>.companent.name&#125;</span>`</span>),</span></span><br><span class="line"><span class="javascript">        h(<span class="string">&#x27;p&#x27;</span>, <span class="string">`地址：<span class="subst">$&#123;<span class="built_in">this</span>.companent.addrress&#125;</span>`</span>),</span></span><br><span class="line">      ])</span><br><span class="line">    &#125;</span><br><span class="line"><span class="javascript">  &#125;).$mount(<span class="string">&#x27;#app&#x27;</span>)</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h1 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h1><p><img src="./vue-lifecycle.jpeg" alt="生命周期"></p>
+<h1 id="常用语法"><a href="#常用语法" class="headerlink" title="常用语法"></a>常用语法</h1><ul>
+<li>差值表达式—-<code>&#123;&#123;&#125;&#125;</code></li>
+<li>指令 — <code>v-bind,v-on,v-for,v-if...</code>,也可以自定义指令</li>
+<li>计算属性和侦听器  —-  <code>computed,watch</code>,计算属性计算的结果会被缓存，对于一步操作或开销比较大的操作可以使用侦听器。</li>
+<li>Class和Style绑定，分别可以绑定数组或者对象。实际开发中建议使用Class绑定，使样式可以重用</li>
+<li>条件渲染/列表渲染</li>
+<li>表单输入绑定</li>
+</ul>
+<h1 id="常用概念"><a href="#常用概念" class="headerlink" title="常用概念"></a>常用概念</h1><ol>
+<li><p>组件</p>
+<p>组件是可复用的VUE实例，封装了HTML、CSS、JS。可是实现页面上的一个功能区域，可以被无限次复用</p>
+</li>
+<li><p>插槽</p>
+<p>插槽是在组件中使用solt占位，在使用组件时，与占位位置对于的内容会填充到组件中，使组件更加灵活</p>
+</li>
+<li><p>插件</p>
+<p>vue-router，vuex都是VUE的插件。</p>
+</li>
+<li><p>混入 <code>mixin</code></p>
+<p>如果多个组件都有相同的选项，就可以使用混入的方式，将选项合并，使代码重用。</p>
+</li>
+</ol>
+<h1 id="vue的构建版本"><a href="#vue的构建版本" class="headerlink" title="vue的构建版本"></a>vue的构建版本</h1><ul>
+<li>运行时版：不支持template模板，需要打包的时候提前编译。</li>
+<li>完整版：包含运行时版和编译器，体积比运行时版大10k左右，程序运行的时候把模板转换成render函数。</li>
+</ul>
+<p>vue-cli采用运行时版本，因为其效率更高。</p>
+<h2 id="修改vue版本为完整版"><a href="#修改vue版本为完整版" class="headerlink" title="修改vue版本为完整版"></a>修改vue版本为完整版</h2><p>在<code>vue.config.js</code>中配置vue版本</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="comment">//运行时编译</span></span><br><span class="line">  runtimeCompiler: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="在运行时版本中使用render函数渲染"><a href="#在运行时版本中使用render函数渲染" class="headerlink" title="在运行时版本中使用render函数渲染"></a>在运行时版本中使用render函数渲染</h2><p><em>原代码</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Vue.component(<span class="string">&#x27;router-link&#x27;</span>,&#123;</span><br><span class="line">  props:&#123;</span><br><span class="line">    to:<span class="built_in">String</span>,</span><br><span class="line">    template:<span class="string">&#x27;&lt;a :href=&quot;to&quot;&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/a&gt;&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><em>render函数渲染</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Vue.component(<span class="string">&#x27;router-link&#x27;</span>,&#123;</span><br><span class="line">  props:&#123;</span><br><span class="line">    to:<span class="built_in">String</span>,</span><br><span class="line">    render(h)&#123;</span><br><span class="line">      <span class="keyword">return</span> h(<span class="string">&#x27;a&#x27;</span>,&#123;</span><br><span class="line">        <span class="comment">//设置属性</span></span><br><span class="line">        attrs:&#123;</span><br><span class="line">          href:<span class="built_in">this</span>.to</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,[</span><br><span class="line">        <span class="comment">//子元素为默认的slot插槽</span></span><br><span class="line">        <span class="built_in">this</span>.$slots.default</span><br><span class="line">      ])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/VUE/">#
+                                VUE</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/15/VUE/vue-router/">Vue-Router的使用</a>
+            
+            
+                <a class="next" rel="next" href="/2020/12/12/engineering/module/rollup/">前端工程化10-rollup-ES Module打包器</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

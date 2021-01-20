@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>一道面试题引发的思考--EventLoop | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">一道面试题引发的思考--EventLoop</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-09-15</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/JS/">JS</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h3 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;<span class="built_in">console</span>.log(<span class="number">2</span>)&#125;,<span class="number">1000</span>)</span><br><span class="line"><span class="keyword">let</span> start = <span class="keyword">new</span> <span class="built_in">Date</span>()</span><br><span class="line"><span class="keyword">while</span>(<span class="keyword">new</span> <span class="built_in">Date</span>() - start &lt; <span class="number">3000</span>)&#123;&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">4</span>)</span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">reslove,reject</span>)=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">5</span>)</span><br><span class="line">        reslove()</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">6</span>)</span><br><span class="line">    &#125;).then(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">7</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">reslove</span>)=&gt;</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="number">8</span>)</span><br><span class="line">            reslove()</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;).then(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">9</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;,<span class="number">0</span>)</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">10</span>)</span><br><span class="line">    foo.bar()</span><br><span class="line">&#125;).then(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">11</span>)</span><br><span class="line">&#125;).then(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">12</span>)</span><br><span class="line">&#125;).catch(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">13</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">14</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>输出结果：1,4,10,14,13,2,5,6,7,8,9</p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>这道题考察的是 <strong>异步函数的执行</strong>  以及  <strong>浏览器Event-Loop</strong>。还涉及到了<strong>函数调用栈</strong>、<strong>setTimeOut</strong>，<strong>Promise</strong>等知识点。</p>
+<h3 id="异步执行函数"><a href="#异步执行函数" class="headerlink" title="异步执行函数"></a>异步执行函数</h3><h4 id="为什么使用异步执行函数？"><a href="#为什么使用异步执行函数？" class="headerlink" title="为什么使用异步执行函数？"></a>为什么使用异步执行函数？</h4><p>JavaScript为单线程程序，若其中某个函数或方法占用时间过长，阻塞了进程，导致用户一直需要等待当前函数执行完成之后才能进行下一步操作。</p>
+<p>这严重影响了用户体验及程序运行效率。</p>
+<p>为了解决这一问题，所以采用异步执行。</p>
+<h4 id="异步解决方案"><a href="#异步解决方案" class="headerlink" title="异步解决方案"></a>异步解决方案</h4><p>异步进化史：回调函数、Promise、Generator、ansyc/await</p>
+<p><strong>回调函数</strong></p>
+<p>回调函数是解决异步最常用的解决方案，但是当回调嵌套回调，回调又嵌套回调的时候，多层回调嵌套，造成“回调地狱”，使得代码的  可读性、可维护性被破坏。</p>
+<p><strong><a href="/tags/Promise/">Promise</a></strong></p>
+<p>为了解决上面的问题，Promise采用链式调用。</p>
+<p>Promise执行resolve后，执行then中的方法，Promise中出现错误或执行reject后，执行catch中的方法。</p>
+<p>代码清晰，逻辑简单。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve,reject</span>)=&gt;</span>&#123;</span><br><span class="line">  resolve(<span class="string">&#x27;success&#x27;</span>)</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span>=&gt;</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res)</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">error</span>=&gt;</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(error)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//success</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Generator</strong></p>
+<p>Generator函数回返回一个Generator对象，对象可以使用<code>next()</code>函数逐步执行。</p>
+<p>Generator函数的书写更符合一般的函数书写方式，可以显性的看到函数的执行步骤。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义generator函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> * <span class="title">gen</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//调用函数，放回generator生成器</span></span><br><span class="line"><span class="keyword">let</span> generator = gen()</span><br><span class="line"><span class="comment">//generator生成器逐步调用</span></span><br><span class="line">generator.next().next().next</span><br></pre></td></tr></table></figure>
+
+<p><strong>async/await</strong></p>
+<p><code>async/await</code>是promise的语法糖。使用同步书写的方式完成异步函数的编写。</p>
+<p><strong>注意</strong>：async函数中，只有await后面部分的函数是异步的，若async函数中没有await，则整个async函数都是同步的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">const</span> result1 = <span class="keyword">await</span> <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">const</span> result2 = <span class="keyword">await</span> <span class="number">1</span> + result1;</span><br><span class="line">  <span class="built_in">console</span>.log(result2)</span><br><span class="line">&#125;</span><br><span class="line">test()</span><br><span class="line"><span class="comment">//2</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="异步是在哪里执行的？"><a href="#异步是在哪里执行的？" class="headerlink" title="异步是在哪里执行的？"></a>异步是在哪里执行的？</h4><p>我们知道。函数执行时，将函数推入调用栈，执行完成后，推出调用栈。所以，才会有阻塞问题。</p>
+<p>那么，异步执行的函数，是在哪里执行的呢？</p>
+<p>JS引擎不能做，那浏览器来做嘛。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Learn/JavaScript/Client-side_web_APIs/Introduction">Web API</a>可以帮助我们来实现<strong>异步</strong>、<strong>非阻塞</strong>。</p>
+<p>所以，当遇到需要异步执行的函数或方法时，将函数或方法置于Web API中执行，调用栈继续推入、推出主线程上的函数及方法。</p>
+<p>当Web API中异步的函数或方法执行完成后(像是setTimeOut时间计数结束、Ajax异步请求得到了结果。。。)，将回调函数加入<strong>任务队列</strong> <span style="color:#ccc">(  what?任务队列又是什么？  os：终于到重点了)</span>，</p>
+<p> 当函数调用栈为空时，开始逐个将回调函数推入栈中执行，执行完成后推出栈，并推入下一个回调函数。。</p>
+<p>举个肯德基点餐的例子，大概理解一下。(以下故事纯属杜撰，如有雷同，纯属巧合)</p>
+<p><em>肯德基夜班，只有一个厨师和一个收银员，肯德基规定，只有在本职工作完成的情况下，才可以做其他工作。(即，在有人点餐的时候，收银员不能做出餐工作。厨师没有将所有餐品做完时，不允许做出餐工作。)</em></p>
+<p><em>而此时，突然来了一群人要点餐。</em></p>
+<p><em>客户点餐后，执行异步操作(等待厨师出餐，厨师出餐后，按序将餐放置于出餐平台)</em></p>
+<p><em>当收银员点餐完成后，按餐品顺序叫号，客人取餐。</em></p>
+<p>在上面这个例子中</p>
+<p>收银员—<strong>函数调用栈</strong></p>
+<p>厨师—-<strong>WebAPI</strong></p>
+<p>出餐台—<strong>任务队列</strong></p>
+<p>叫号取餐—<strong>回调函数内容</strong></p>
+<p>常用的<strong>浏览器API</strong>，包括</p>
+<ul>
+<li>操作文档的API(DOM操作)</li>
+<li>从服务器获取数据的API(Ajax)</li>
+<li>用于绘制和操作图形的API(canvas,WebGL,requestAninationFrame)</li>
+<li>音频和视频API(HTMLMediaElement,Web Audio API,WebRTC)</li>
+<li>设备API(定位，系统通知)</li>
+<li>客户端存储API(WEB Stroage API)</li>
+</ul>
+<h3 id="任务队列"><a href="#任务队列" class="headerlink" title="任务队列"></a>任务队列</h3><p>任务队列分为  <strong>宏任务队列</strong>  和  <strong>微任务队列</strong></p>
+<p>什么是微任务，什么又是宏任务呢？</p>
+<p>常见宏任务、微任务如下：</p>
+<p><strong>宏任务</strong>：</p>
+<ul>
+<li>I/O, setTimeout</li>
+<li>setInterval</li>
+<li>requsetAnimationFrame(浏览器才有)</li>
+<li>setImmediate(Node才有)</li>
+</ul>
+<p><strong>微任务</strong>：</p>
+<ul>
+<li>Promise.then</li>
+<li>Promise.catch</li>
+<li>Promise.finally,</li>
+<li>MutationObserver(浏览器才有)</li>
+<li>process.nextTick(Node才有)</li>
+</ul>
+<p>还是上面那个例子：</p>
+<p><em>有个人在取餐的时候，提出，他的炸薯条需要多几包番茄酱，他还需要一些纸巾</em></p>
+<p><em>那 收银员 在给他出餐的时候，就需要额外执行完当前取餐客户的需求，才能继续服务后面的客户</em></p>
+<p>这就相当于下面的代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">	<span class="comment">//取餐</span></span><br><span class="line">	New <span class="built_in">Promise</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">		<span class="comment">//额外添加番茄酱</span></span><br><span class="line">		<span class="comment">//额外添加纸巾</span></span><br><span class="line">		resolve()</span><br><span class="line">	&#125;).then(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">		<span class="comment">//给予番茄酱</span></span><br><span class="line">		<span class="comment">//给予纸巾</span></span><br><span class="line">	&#125;)</span><br><span class="line">&#125;,<span class="string">&#x27;等餐时间&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h3><blockquote>
+<p>浏览器事件循环。</p>
+</blockquote>
+<p>一个完整的浏览器循环过程：</p>
+<ol>
+<li>初始状态，调用栈空，微任务队列空，宏任务队列中只有一个script脚本(整体代码)。</li>
+<li>全局上下文(script标签)推入调用栈，同步执行代码。遇到异步执行的代码，交于Web API处理，分别推入宏任务队列及微任务队列</li>
+<li>同步执行代码至此那个完成后，逐个推入<strong>微任务队列</strong>中任务(<strong>微任务队列是一队一队执行的</strong>)</li>
+<li>微任务队列清空后，推入一个宏任务至调用栈，若宏任务执行过程中，又产生了新的微任务，则执行完全部微任务后才会在推一个宏任务进入调用栈（<strong>宏任务是一个一个执行的</strong>)</li>
+</ol>
+<h3 id="回看题目"><a href="#回看题目" class="headerlink" title="回看题目"></a>回看题目</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>)</span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;<span class="built_in">console</span>.log(<span class="number">2</span>)&#125;,<span class="number">1000</span>)</span><br><span class="line"><span class="keyword">let</span> start = <span class="keyword">new</span> <span class="built_in">Date</span>()</span><br><span class="line"><span class="keyword">while</span>(<span class="keyword">new</span> <span class="built_in">Date</span>() - start &lt; <span class="number">3000</span>)&#123;&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">4</span>)</span><br><span class="line"><span class="built_in">setTimeout</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">reslove,reject</span>)=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">5</span>)</span><br><span class="line">        reslove()</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">6</span>)</span><br><span class="line">    &#125;).then(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">7</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">reslove</span>)=&gt;</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="number">8</span>)</span><br><span class="line">            reslove()</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;).then(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">9</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;,<span class="number">0</span>)</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">10</span>)</span><br><span class="line">    foo.bar()</span><br><span class="line">&#125;).then(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">11</span>)</span><br><span class="line">&#125;).then(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">12</span>)</span><br><span class="line">&#125;).catch(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">13</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">14</span>)</span><br></pre></td></tr></table></figure>
+
+<p>首先，调用栈执行主线程任务</p>
+<p>console.log(1) —–  输出1</p>
+<p>然后遇到了  setTimeout(()=&gt;{console.log(2)},1000)，交由 Web API进行处理，1s后，将回调函数入队宏任务队列，此时发现调用栈主线程尚未执行完，则，回调函数继续等待在<strong>宏任务队列</strong>。</p>
+<p>3s后，调用栈执行  console.log(4)   —– 输出 4</p>
+<p>然后遇到setTimeout,交于Web API处理，将回调函数入队<strong>宏任务队列</strong>。</p>
+<p>调用栈执行Promise函数，执行console.log(10)—-输出10，执行foo.bar()–一个未定义函数，将promise.catch交于WebAPI处理，将回调函数入队 <strong>微任务队列</strong></p>
+<p>调用栈执行console.log(14)—-输出14</p>
+<p><strong>综上，主线任务执行完毕后，输出结果为    1,4,10,14</strong></p>
+<p>主线任务执行完毕后，推入宏任务至调用栈前，检查微任务队列有无任务。执行微任务队列中的回调函数输出—-13</p>
+<p><strong>此时，输出结果为1,4,10,14,13</strong></p>
+<p>微任务队列清空后，宏任务队列第一个出队，推入调用栈，执行console.log(2),—输出  2</p>
+<p>微任务队列清空后，宏任务队列第一个出队，推入调用栈，执行console.log(5),console.log(6)—输出  5,6</p>
+<p>遇到Promise，resolve，将Promise.then推给Web API执行，将回调函数推入微任务队列</p>
+<p>推入宏任务至调用栈前，检查微任务队列有无任务，执行微任务队列中回调函数，输,7，8，将Promise.then推入微任务队列</p>
+<p>推入宏任务至调用栈前，检查微任务队列有无任务，执行微任务队列中回调函数，输出9</p>
+<p>最后，输出结果为1,4,10,14,13,2,5,6,7,8,9</p>
+<p><em>随便看看图解</em></p>
+<p><img src="./eventloop.gif" alt="EventLoop"></p>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/%E5%BC%82%E6%AD%A5%E6%89%A7%E8%A1%8C/">#
+                                异步执行</a>
+                        
+                            <a href="/tags/EventLoop/">#
+                                EventLoop</a>
+                        
+                            <a href="/tags/%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/">#
+                                任务队列</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/09/17/JS/async-await/">一道面试题引发的思考--async/await</a>
+            
+            
+                <a class="next" rel="next" href="/2020/09/15/algorithm/LeetCode34/">每日算法-LeetCode34</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

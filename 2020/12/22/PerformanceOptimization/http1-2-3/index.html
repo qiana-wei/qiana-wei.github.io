@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>HTTP协议 | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">HTTP协议</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-12-22</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/HTTP/">HTTP</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>HTTP/2相较HTTP/1,大幅度提升了网页性能，使用HTTP/2协议，即可减少很多之前所做的性能优化工作。</p>
+</blockquote>
+<blockquote>
+<p>HTTP/2虽然提升了 网页性能，但仍存在一些缺陷，HTTP/3是为了解决HTTP/2的问题而推出的</p>
+</blockquote>
+<h1 id="HTTP协议"><a href="#HTTP协议" class="headerlink" title="HTTP协议"></a>HTTP协议</h1><blockquote>
+<p> HTTP，超文本传输协议，是互联网上运用最为广泛的协议。</p>
+<p>所有的WWW文件都必须遵守这个标准。</p>
+<p>是从WWW服务器传输超文本到本地浏览器的传输协议。</p>
+</blockquote>
+<p>设计HTTP最初的目的是提供一种接收和发送HTML页面的方法。</p>
+<p>HTTP客户端发起一个请求，建立一个到服务器指定端口（默认80端口）的TCP连接。</p>
+<p>HTTP协议与TCP协议并不冲突，HTTP定义在七层协议中的应用层，TCP解决的是传输层的逻辑。</p>
+<p>HTTP协议的瓶颈及其优化技巧都是基于TCP协议本身的特性。</p>
+<ul>
+<li>使用HTTP长链接的方案，优化TCP建立连接三次握手带来的延迟</li>
+<li>连接的重用来优化性能。TCP建立连接初期慢启动特性，所以连接重用比新建连接性能要好。</li>
+</ul>
+<p><strong>HTTP连接</strong>使用的是<strong>请求-响应</strong>的方式，在请求时需要先建立连接，客户端想服务端发起请求后，服务端才会回复数据。</p>
+<p>客户端时依据域名向服务器建立连接的，一般PC端浏览器回针对单个域名的服务同时建立6～8个连接买手机端的连接一般控制在4～6个。</p>
+<h1 id="HTTP1-0"><a href="#HTTP1-0" class="headerlink" title="HTTP1.0"></a>HTTP1.0</h1><p>为了提高系统的效率，HTTP1.0规定浏览器与服务器只能保持短暂的连接。浏览器每次请求都需要与服务器建立一个TCP连接，服务器处理完成请求后回立即断开TCP连接。服务器不跟踪每个客户，也不记录过去的请求。</p>
+<p><strong>缺点</strong></p>
+<ol>
+<li><p><strong>连接无法复用</strong>，当访问一个包含了很多图片请求的网页时，客户端需要与服务端建立连接，请求Html文件。在解析Html时，发现图片资源需要向服务器请求，故而整个页面需要向服务器发起多次连接，完成多次请求和响应。严重影响了客户端和服务器的性能。</p>
+</li>
+<li><p><strong>队头阻塞</strong>，当顺序发送的请求序列中的一个请求因为某种原因被阻塞时，在后面排队的所有请求也一并被阻塞，会导致客户端迟迟收不到数据。队头阻塞导致带宽无法被充分利用，以及后续健康请求被阻塞。</p>
+</li>
+</ol>
+<h1 id="HTTP1-1"><a href="#HTTP1-1" class="headerlink" title="HTTP1.1"></a>HTTP1.1</h1><p>为了解决HTTP1.0的缺点，</p>
+<p>HTTP1.1<strong>支持持久连接</strong>，允许在一个TCP连接上传输多个HTTP请求和响应，减少建立连接和关闭连接的消耗和延迟。</p>
+<p>HTTP1.1实行<strong>管道机制</strong>允许客户端不必等待上一次请求响应结束，即可发送下一次请求。服务端按照接收到的客户端请求先后顺序依次回应响应。即保证客户端能够区分每次请求的响应，有减少了整个页面下载所需要的时间。</p>
+<p>HTTP1.1采用<strong>流模式</strong>传输文件，实现断点传输</p>
+<p>HTTP1.1添加了新的请求方式：</p>
+<ul>
+<li><code>PUT</code>:请求服务器存储一个资源;</li>
+<li><code>DELETE</code>：请求服务器删除标识的资源；</li>
+<li><code>OPTIONS</code>：请求查询服务器的性能，或者查询与资源相关的选项和需求；</li>
+<li><code>TRACE</code>：请求服务器回送收到的请求信息，主要用于测试或诊断；</li>
+<li><code>CONNECT</code>：保留将来使用</li>
+</ul>
+<p>HTTP 1.1通过增加更多的请求头和响应头来改进和扩充HTTP 1.0的功能。</p>
+<ul>
+<li>增加<code>Host</code>请求头字段，Web浏览器可以使用主机头名来明确表示要访问服务器上的那个Web站点，实现在一台Web服务器上可以在同一个IP地址和端口号上使用不同的主机名来创建多个虚拟站点。</li>
+<li><code>Connection</code>请求头值为Keep-Alive时，实现持续连接。值为close时，完成一次请求响应即断开连接。</li>
+<li><code>Authorization</code>请求头，用于验证用户身份</li>
+<li>状态管理，如<code>Set-Cookie</code>,<code>Cookie</code>，用于携带客户端与服务端之间的状态信息。</li>
+<li>添加<code>Cache-Control</code>头实现Cache缓存<ul>
+<li><code>Cache-Control:no-store</code>:没有缓存</li>
+<li><code>Cache-Control:no-cache</code>:缓存，但重新验证</li>
+<li><code>Cache-Control:private</code>:私有缓存，响应只用于某单个用户，中间人不能缓存，响应只应用于浏览器私有缓存中</li>
+<li><code>Cache-Control:public</code>:公共缓存，响应可以被任何中间人缓存。</li>
+<li><code>Cache-Control:max-age=3000</code>:缓存过期时间，毫秒计算</li>
+<li><code>Cache-Control:must-revalidate</code>:验证方式，缓存在考虑使用一个陈旧的资源时，必须先验证它的状态，已过期的缓存将不被使用。</li>
+</ul>
+</li>
+</ul>
+<p><strong>但是，HTTP1.1仍有一些缺点</strong></p>
+<ol>
+<li><p><strong>高延迟</strong>–页面加载速度降低</p>
+<p>虽然允许复用TCP连接，但是同一个TCP连接里面，所有的数据通信是<strong>按次序进行</strong>的。服务器只有处理完一个请求，才会接着处理下一个请求。仍会出现<strong>队头阻塞</strong>问题。</p>
+<p><strong>解决方案</strong></p>
+<ul>
+<li><p>将同一页面的资源分散到不同域名下，提升连接上限</p>
+</li>
+<li><p>雪碧图，合并多张小图为一张大图</p>
+</li>
+<li><p>图片的原始数据嵌入在 CSS 文件里面的 URL 里，减少网络请求次数</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.icon</span> &#123;</span><br><span class="line">  <span class="attribute">background</span>: <span class="built_in">url</span>(data:image/png;base64,&lt;data&gt;) no-repeat;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将多个小的js文件合并打包为一个较大的文件</p>
+</li>
+</ul>
+</li>
+<li><p><strong>无状态特性</strong>—HTTP头部巨大</p>
+<p>Header一般会携带一些固定字段，Header 里携带的内容过大，在一定程度上增加了传输成本。</p>
+</li>
+<li><p><strong>明文传输</strong>–不安全</p>
+<p>HTTP1.1 在传输数据时，所有传输的内容都是明文传输，客户端和服务器端都无法验证对方的身份，在一定程度上无法保证数据的安全性。</p>
+</li>
+<li><p><strong>不支持服务器推送消息</strong></p>
+<p>响应信息必须由客户端发起请求，服务端才会给予回复响应。</p>
+</li>
+</ol>
+<h1 id="HTTP1-0和HTTP1-1的一些区别"><a href="#HTTP1-0和HTTP1-1的一些区别" class="headerlink" title="HTTP1.0和HTTP1.1的一些区别"></a>HTTP1.0和HTTP1.1的一些区别</h1><ol>
+<li><p><strong>缓存处理</strong></p>
+<p>HTTP1.0在Header中使用<code>If-Modified-Since</code>,<code>Expires</code>来作为缓存判断的标准</p>
+<p>HTTP1.1引入了更多缓存控制策略<code>Entity tag</code>、<code>If-Unmodified-Since</code>、 <code>If-Match</code>,、<code>If-None-Match</code></p>
+</li>
+<li><p><strong>文件传输模式</strong></p>
+<p>HTTP1.0文件采用“数据块”传输，无法获取资源的部分内容，也无法实现断点续传</p>
+<p>HTTP1.1文件采用“流模式”传输，可以请求资源的部分内容（使用range头控制），也可以显示断点传输</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">code</span>&gt;</span>RANGE:bytes=XXXX<span class="tag">&lt;/<span class="name">code</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>长连接</strong></p>
+<p>HTTP1.1通过<code>Connection</code>头实现客户端与服务端的长连接</p>
+</li>
+<li><p><strong>Host头处理</strong></p>
+<p>HTTP1.1通过Host头名，实现一台Web服务器上建立多个虚拟Web站点</p>
+</li>
+<li><p><strong>新增多种请求方式</strong></p>
+</li>
+<li><p><strong>新增多种状态码</strong></p>
+</li>
+</ol>
+<h1 id="HTTP2-0"><a href="#HTTP2-0" class="headerlink" title="HTTP2.0"></a>HTTP2.0</h1><p>HTTP2.0专注于性能，最大的目标是在用户和网站间只用一个连接。使用 HTTP/2 能带来 20%~60% 的效率提升。</p>
+<h2 id="HTTP2新特性"><a href="#HTTP2新特性" class="headerlink" title="HTTP2新特性"></a>HTTP2新特性</h2><h3 id="1-二进制传输"><a href="#1-二进制传输" class="headerlink" title="1. 二进制传输"></a>1. 二进制传输</h3><p>HTTP2 采用二进制格式传输数据，而非HTTP1.x中采用的纯文本形式。二进制协议解析起来更高效。</p>
+<p>HTTP2讲请求和响应数据分割为更小的帧，并且采用二进制编码。</p>
+<p>将原来的“Header+Body”消息打散为多个小片的二进制帧，用<code>HEADERS帧</code>存放头数据，用<code>Data帧</code>存放实体数据。</p>
+<p>在 HTTP/2 中：</p>
+<ul>
+<li>同域名下所有通信在同一个连接上完成</li>
+<li>单个连接可以承载任意数量的双向数据流</li>
+<li>数据以消息的形式发送，消息由帧组成，多个帧之间可以乱序发送，根据帧首部的流标识可以重新组装。</li>
+</ul>
+<h3 id="2-多路复用"><a href="#2-多路复用" class="headerlink" title="2. 多路复用"></a>2. 多路复用</h3><p>多路复用很好的解决了浏览器限制同一个域名下请求数量的问题，同时也更容易实现全速传输。</p>
+<p>HTTP2二进制分帧之后，不再依赖 TCP 链接去实现多流并行了，在 HTTP/2 中：</p>
+<ul>
+<li>同域名下所有通信在同一个连接上完成</li>
+<li>单个连接可以承载任意数量的双向数据流</li>
+<li>数据以消息的形式发送，消息由帧组成，多个帧之间可以乱序发送，根据帧首部的流标识可以重新组装。</li>
+</ul>
+<p>正式因为二进制传输与多路复用，使得性能有了极大的提升：</p>
+<ul>
+<li>同域名只需要占用一个TCP连接，下载多个资源时，避免了多次三次握手连接及慢启动延迟，同时也避免了多个TCP连接竞争带宽所带来的问题。</li>
+<li>并行交错的发送请求/响应，请求/响应间互不干扰。</li>
+<li>HTTP2中，每个请求都可以带有一个31bit的优先值，0 表示最高优先级， 数值越大优先级越低。利用优先值，客户端可服务端可以在处理不同的流时采取不同的策略，以最优的方式发送流、消息和帧。</li>
+</ul>
+<h3 id="3-Header压缩"><a href="#3-Header压缩" class="headerlink" title="3. Header压缩"></a>3. Header压缩</h3><p>HTTP2专门开发了””HPACK“压缩，在客户端与服务端之间建立字典，用索引号表示重复的字符串，采用哈夫曼编码来压缩整数和字符串，显示50%～90%的压缩率。</p>
+<ul>
+<li>在客户端和服务器端使用“首部表”来跟踪和存储之前发送的键 - 值对，对于相同的数据，不再通过每次请求和响应发送。</li>
+<li>首部表在 HTTP/2 的连接存续期内始终存在，由客户端和服务器共同渐进地更新 。</li>
+<li>每个新的首部键 - 值对要么被追加到当前表的末尾，要么替换表中之前的值</li>
+</ul>
+<h3 id="4-服务端推送"><a href="#4-服务端推送" class="headerlink" title="4. 服务端推送"></a>4. 服务端推送</h3><p>服务端可以新建“流”，主动向客户端发送消息。</p>
+<p>服务端可以主动推送，客户端也有权利选择是否接收。如果服务端推送的资源已经被浏览器缓存过，浏览器可以通过发送 RST_STREAM 帧来拒收。</p>
+<p>主动推送也遵守同源策略。</p>
+<h3 id="5-提高安全性"><a href="#5-提高安全性" class="headerlink" title="5.提高安全性"></a>5.提高安全性</h3><p>HTTP2不强制使用加密通信，但是由于各大主流浏览器宣布<strong>只支持加密的HTTP2</strong>，所以，实际上，HTTP2传输是加密的。</p>
+<h2 id="HTTP2缺点"><a href="#HTTP2缺点" class="headerlink" title="HTTP2缺点"></a>HTTP2缺点</h2><blockquote>
+<p>HTTP2的缺点主要是由TCP协议造成的</p>
+</blockquote>
+<ol>
+<li><p>TCP 和 TCP+TLS 建立连接的延时</p>
+<p>HTTP2是通过TCP协议来传输的，如果使用HTTPS的话，还需要使用TLS协议进行安全传输。</p>
+<p>整个过程，则需要两次两个握手过程，TCP三次握手需要消耗1.5个RTT（round-trip time），TLS连接大致需要1～2个RTT，即在数据传输前，即已消耗3～4个RTT。</p>
+</li>
+<li><p>TCP头部阻塞问题没有彻底解决</p>
+<p>当传输过程发生丢包时，TCP“丢包重传”机制，丢失的包必须要等待重新传输确认，整个TCP都要等待重传，会阻塞TCP连接中的所有请求</p>
+</li>
+</ol>
+<h1 id="HTTP3"><a href="#HTTP3" class="headerlink" title="HTTP3"></a>HTTP3</h1><p>一个基于 UDP 协议的“QUIC”协议，让 HTTP 跑在 QUIC 上而不是 TCP 上，是HTTP/3 中的底层支撑协议。</p>
+<p>HTTP3 的主要改进在传输层上。传输层不会再有我前面提到的那些繁重的 TCP 连接了。现在，一切都会走 UDP。</p>
+<p>UDP 是“无连接”的，根本就不需要“握手”和“挥手”，但是QUIC 也实现了可靠传输，保证数据一定能够抵达目的地。</p>
+<h3 id="QUIC新特性"><a href="#QUIC新特性" class="headerlink" title="QUIC新特性"></a>QUIC新特性</h3><h3 id="1-实现了类似-TCP-的流量控制、传输可靠性的功能。"><a href="#1-实现了类似-TCP-的流量控制、传输可靠性的功能。" class="headerlink" title="1. 实现了类似 TCP 的流量控制、传输可靠性的功能。"></a>1. 实现了类似 TCP 的流量控制、传输可靠性的功能。</h3><p>虽然UDP不提供可靠性的传输，但是基于UDP的QUIC在UDP的基础上增加了一层来保证数据传输的可靠性。</p>
+<p>提供了数据包重传、拥塞控制以及其他一些TCP中存在的特性。</p>
+<h3 id="2-实现了快速握手功能"><a href="#2-实现了快速握手功能" class="headerlink" title="2.实现了快速握手功能"></a>2.实现了快速握手功能</h3><p>QUIC是基于UDP的，所以QUIC可以实现使用0-RTT或1-RTT来建立连接，这意味着QUIC可以使用最快的速度来进行数据传输。</p>
+<h3 id="3-集成了TLS加密功能"><a href="#3-集成了TLS加密功能" class="headerlink" title="3. 集成了TLS加密功能"></a>3. 集成了TLS加密功能</h3><p>目前 QUIC 使用的是 TLS1.3，相较于早期版本 TLS1.3 有更多的优点，其中最重要的一点是减少了握手所花费的 RTT 个数。</p>
+<h3 id="4-多路复用，彻底解决-TCP-中队头阻塞的问题"><a href="#4-多路复用，彻底解决-TCP-中队头阻塞的问题" class="headerlink" title="4. 多路复用，彻底解决 TCP 中队头阻塞的问题"></a>4. 多路复用，彻底解决 TCP 中队头阻塞的问题</h3><p>QUIC 实现了在同一物理连接上可以有多个独立的逻辑数据流。实现了数据流的单独传输，就解决了 TCP 中队头阻塞的问题</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="HTTP1-0-1"><a href="#HTTP1-0-1" class="headerlink" title="HTTP1.0"></a>HTTP1.0</h2><p><strong>特点</strong></p>
+<p>每次请求都要新建立TCP连接，请求/响应结束后即终止连接，服务端不做记录和追踪。</p>
+<p><strong>缺点</strong></p>
+<ol>
+<li>TCP连接无法复用，连接耗时，有延迟。</li>
+<li>队头阻塞</li>
+<li>明文传输，不安全</li>
+</ol>
+<h2 id="HTTP1-1-1"><a href="#HTTP1-1-1" class="headerlink" title="HTTP1.1"></a>HTTP1.1</h2><p><strong>特点</strong></p>
+<ol>
+<li>TCP连接支持长连接</li>
+<li>管道传输，文件传输采用“文件流”的形式，可以进行资源部分加载及断点续传</li>
+<li>丰富了Header头部，支持更多的缓存控制</li>
+<li>头部添加Host，允许服务器对同一IP，同一端口建立多个虚拟Web站点</li>
+<li>新增状态码</li>
+<li>新增多种请求方式</li>
+</ol>
+<p><strong>缺点</strong></p>
+<ol>
+<li>明文传输，不安全</li>
+<li>Header头部巨大，多次请求，重复信息需要重复传输，消耗性能</li>
+<li>队头阻塞问题</li>
+<li>不支持服务器推送</li>
+</ol>
+<h2 id="HTTP2"><a href="#HTTP2" class="headerlink" title="HTTP2"></a>HTTP2</h2><p><strong>特点</strong></p>
+<ol>
+<li>二进制传输</li>
+<li>多路复用</li>
+<li>未规定加密传输，但实际主流浏览器仅支持加密传输的HTTP2协议</li>
+<li>Header头部压缩</li>
+<li>支持服务端推送</li>
+</ol>
+<p><strong>缺点</strong></p>
+<p>HTTP2的缺点主要是由TCP协议带来的</p>
+<ol>
+<li>未彻底解决队头阻塞问题，当发生丢包时，TCP“丢包重传”机制，丢失的包必须要等待重新传输确认，整个TCP都要等待重传，会阻塞TCP连接中的所有请求。</li>
+<li>当HTTP2使用HTTPS时，除了TCP协议，还需要使用TLS协议，需要两次握手过程</li>
+</ol>
+<h2 id="HTTP3-1"><a href="#HTTP3-1" class="headerlink" title="HTTP3"></a>HTTP3</h2><p>舍弃TCP连接，基于UDP协议的QUIC协议，让 HTTP 跑在 QUIC 上而不是 TCP 上。</p>
+<p><strong>特点</strong></p>
+<ol>
+<li>使用QUIC协议，而非TCP协议进行传输，但是具有TCP的可靠性连接。</li>
+<li>实现了快速握手。</li>
+<li>集成了TLS安全传输协议</li>
+<li>多路复用，彻底解决了队头阻塞问题，在同一个物理连接上可以实现多路数据流传输。</li>
+</ol>
+<p><em>参考</em></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.infoq.cn/article/ku4okqr8vh123a8dlccj">https://www.infoq.cn/article/ku4okqr8vh123a8dlccj</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/52d86558ca57">https://www.jianshu.com/p/52d86558ca57</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.debugger.wiki/article/html/1565502376358922">https://www.debugger.wiki/article/html/1565502376358922</a></li>
+</ol>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#
+                                性能优化</a>
+                        
+                            <a href="/tags/HTTP/">#
+                                HTTP</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/25/PerformanceOptimization/https/">HTTPS</a>
+            
+            
+                <a class="next" rel="next" href="/2020/12/21/VUE/snabbdom/">snabbdom-最开的virtual DOM 之一</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

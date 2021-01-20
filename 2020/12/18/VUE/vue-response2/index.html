@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Qiana">
+
+
+
+
+
+<title>VUE-响应式原理--模拟一个最小版本的vue | Qiana前端小栈</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo">
+                <a href="/">Qiana&#39;s Blog</a>
+            </div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Qiana&#39;s Blog</a>
+                        <a id="mobile-toggle-theme">·&nbsp;Light</a>
+                    </div>
+                    <div class="menu-toggle" onclick="mobileBtn()">&#9776;</div>
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">文档</a>
+                    
+                        <a class="menu-item" href="/category">分类</a>
+                    
+                        <a class="menu-item" href="/tag">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <script>
+        var mobileBtn = function f() {
+            var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+            var mobileMenu = document.getElementById("mobile-menu");
+            if (toggleMenu.classList.contains("active")) {
+                toggleMenu.classList.remove("active")
+                mobileMenu.classList.remove("active")
+            } else {
+                toggleMenu.classList.add("active")
+                mobileMenu.classList.add("active")
+            }
+        }
+    </script>
+
+        <div class="main">
+            <div
+    class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">VUE-响应式原理--模拟一个最小版本的vue</h1>
+            
+                <div class="post-meta">
+                    
+                        作者:
+                        <a itemprop="author" rel="author" href="/">Qiana</a>&nbsp;&nbsp;
+                    
+
+                    
+                        <span class="post-time">
+                            日期:
+                            <a href="#">2020-12-18</a>&nbsp;&nbsp;
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            分类:
+                            
+                                <a href="/categories/VUE/">VUE</a>&nbsp;&nbsp;
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><strong>完整代码</strong>：<a target="_blank" rel="noopener" href="https://github.com/qiana-wei/qiana-wei.github.io/tree/master/code-example/simple-vue">点击这里</a></p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h1><p>实现以下功能：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>差值表达式msg：<span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123;msg&#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>差值表达式count：<span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123;count&#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>指令v-text，msg<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">v-text</span>=<span class="string">&quot;msg&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>指令v-model，count<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">v-model</span>=<span class="string">&quot;count&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./vue.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">      el: <span class="string">&quot;#app&quot;</span>,</span></span><br><span class="line">      data: &#123;</span><br><span class="line"><span class="javascript">        msg: <span class="string">&quot;消息&quot;</span>,</span></span><br><span class="line">        count: 3</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>数据差值绑定</li>
+<li>数据指定绑定</li>
+<li>数据响应式</li>
+<li>数据方向绑定</li>
+</ol>
+<h1 id="Vue-构成"><a href="#Vue-构成" class="headerlink" title="Vue 构成"></a>Vue 构成</h1><p><strong>Vue</strong>负责将data成员注入到vue实例上，并将data转为getter/setter。</p>
+<p><strong>Vue</strong>内部调用<strong>Observer</strong>(数据劫持，对data中的属性进行监听)及<strong>Compiler</strong>(解析指令，替换数据)</p>
+<p><strong>Observer</strong>劫持数据，对data中的属性进行监听，并发送给<strong>Dep</strong></p>
+<p><strong>Dep</strong>接收到数据变化，调用<strong>Watcher</strong>的Update方法</p>
+<h1 id="Vue类"><a href="#Vue类" class="headerlink" title="Vue类"></a>Vue类</h1><h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><ol>
+<li>接收初始化参数</li>
+<li>将data中的属性注入到vue实例中，转化为getter/setter</li>
+<li>调用observer监听data中属性的变化</li>
+<li>调用compiler解析指令/差值表达式</li>
+</ol>
+<h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><table>
+<thead>
+<tr>
+<th>类名：Vue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>属性：<br />+ $options: 记录构造函数参数<br />+ $data:记录响应式的data数据<br />+ $el: 属性元素</td>
+</tr>
+<tr>
+<td>方法：<br />_ proxyData(): 劫持data数据，将数据转变为getter/setter</td>
+</tr>
+</tbody></table>
+<h2 id="初步代码"><a href="#初步代码" class="headerlink" title="初步代码"></a>初步代码</h2><p><em>vue.js</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Vue</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(options) &#123;</span><br><span class="line">    <span class="comment">//1.通过属性保存参数数据</span></span><br><span class="line">    <span class="built_in">this</span>.$options = options || &#123;&#125;</span><br><span class="line">    <span class="built_in">this</span>.$data = options.data || &#123;&#125;  <span class="comment">//$data中的数据才是真正用来监听，实现响应式的数据</span></span><br><span class="line">    <span class="built_in">this</span>.$el = <span class="keyword">typeof</span> options.el === <span class="string">&#x27;string&#x27;</span> ? <span class="built_in">document</span>.querySelector(options.el) : options.el</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2.将data数据转换为getter/setter，注入到data实例中,方便调用</span></span><br><span class="line">    <span class="built_in">this</span>._proxyData(<span class="built_in">this</span>.$data)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//TODO1 3.调用observe对象，监听数据变化</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//TODO2 4.调用compiler对象，解析指令和差值表达式</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//代理数据，代理data中的属性</span></span><br><span class="line">  _proxyData(data) &#123;</span><br><span class="line">    <span class="comment">// 遍历data中的所有属性，将data数据注入到vue实例中</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> data) &#123;</span><br><span class="line">      <span class="built_in">Object</span>.defineProperty(<span class="built_in">this</span>, key, &#123;</span><br><span class="line">        configurable: <span class="literal">true</span>,</span><br><span class="line">        enumerable: <span class="literal">true</span>,</span><br><span class="line">        get() &#123;</span><br><span class="line">          <span class="keyword">return</span> data[key]</span><br><span class="line">        &#125;,</span><br><span class="line">        set(newValue) &#123;</span><br><span class="line">          <span class="keyword">if</span> (newValue === data[key]) &#123;</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">          &#125;</span><br><span class="line">          data[key] = newValue</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Observer类"><a href="#Observer类" class="headerlink" title="Observer类"></a>Observer类</h1><h2 id="功能-1"><a href="#功能-1" class="headerlink" title="功能"></a>功能</h2><ol>
+<li>将data选项中的属性转换为响应式数据</li>
+<li>data中的某个属性也是对象，则该属性也应是响应式的</li>
+<li>data中的某个属性重新赋值为对象时，该对象也应是响应式的</li>
+<li>数据变化，发送通知</li>
+</ol>
+<h2 id="类图-1"><a href="#类图-1" class="headerlink" title="类图"></a>类图</h2><table>
+<thead>
+<tr>
+<th>Observer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>属性：无</td>
+</tr>
+<tr>
+<td>方法：<br />+ walk(data):遍历data中的数据<br />+ defineReactive(obj, key,value):响应式数据</td>
+</tr>
+</tbody></table>
+<h2 id="初步代码-1"><a href="#初步代码-1" class="headerlink" title="初步代码"></a>初步代码</h2><p><em>observer.js</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(data) &#123;</span><br><span class="line">    <span class="built_in">this</span>.walk(data)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  walk(data) &#123;</span><br><span class="line">    <span class="comment">//1. 判断data是否是对象</span></span><br><span class="line">    <span class="keyword">if</span> (!data || <span class="keyword">typeof</span> data !== <span class="string">&#x27;object&#x27;</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//2.若data是对象，遍历data中的所有，调用defineReactive</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> data) &#123;</span><br><span class="line">      <span class="comment">// 若属性值为对象，递归调用</span></span><br><span class="line">      <span class="built_in">this</span>.walk(data[key])</span><br><span class="line">      <span class="built_in">this</span>.defineReactive(data, key, data[key])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  defineReactive(obj, key, value) &#123;</span><br><span class="line">    <span class="keyword">let</span> _this = <span class="built_in">this</span></span><br><span class="line">    <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">      configurable: <span class="literal">true</span>,</span><br><span class="line">      enumerable: <span class="literal">true</span>,</span><br><span class="line">      get() &#123;</span><br><span class="line">        <span class="comment">// TODO 判断有无观察者，并添加观察者</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//若使用obj[key]会引发死循环，因为使用obj[key]即会触发get方法</span></span><br><span class="line">        <span class="keyword">return</span> value</span><br><span class="line">      &#125;,</span><br><span class="line">      set(newValue) &#123;</span><br><span class="line">        <span class="keyword">if</span> (newValue === value) &#123;</span><br><span class="line">          <span class="keyword">return</span></span><br><span class="line">        &#125;</span><br><span class="line">       value = newValue</span><br><span class="line">        <span class="comment">//若新赋值的值为对象，对象也应该是响应式的。</span></span><br><span class="line">       _this.walk(newValue)</span><br><span class="line">        <span class="comment">//TODO 数据变化时，发送通知</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em>vue.js</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Vue</span></span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(options) &#123;</span><br><span class="line">    <span class="comment">//1.通过属性保存参数数据</span></span><br><span class="line">    <span class="built_in">this</span>.$options = options || &#123;&#125;</span><br><span class="line">    <span class="built_in">this</span>.$data = options.data || &#123;&#125;  <span class="comment">//$data中的数据才是真正用来监听，实现响应式的数据</span></span><br><span class="line">    <span class="built_in">this</span>.$el = <span class="keyword">typeof</span> options.el === <span class="string">&#x27;string&#x27;</span> ? <span class="built_in">document</span>.querySelector(options.el) : options.el</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2.将data数据转换为getter/setter，注入到data实例中,方便调用</span></span><br><span class="line">    <span class="built_in">this</span>._proxyData(<span class="built_in">this</span>.$data)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//TODO1 3.调用observe对象，监听数据变化</span></span><br><span class="line">		<span class="keyword">new</span> Observer(<span class="built_in">this</span>.$data)</span><br><span class="line">    <span class="comment">//TODO2 4.调用compiler对象，解析指令和差值表达式</span></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>当调用vm.msg时，触发get(), 在vue.js中获取data.msg时, data即传入的$data。</p>
+<p>而获取data.msg时，触发get(), 在observer.js中获取value，value为walk循环遍历$data时传入的value。</p>
+</blockquote>
+<h1 id="Compiler类"><a href="#Compiler类" class="headerlink" title="Compiler类"></a>Compiler类</h1><p>Ps:直接操作的Dom，没有使用虚拟Dom</p>
+<h2 id="功能-2"><a href="#功能-2" class="headerlink" title="功能"></a>功能</h2><ol>
+<li>编译模板，解析指令、差值表达式</li>
+<li>页面首次渲染</li>
+<li>当数据发生变化时，重新渲染页面</li>
+</ol>
+<h2 id="类图-2"><a href="#类图-2" class="headerlink" title="类图"></a>类图</h2><table>
+<thead>
+<tr>
+<th>Complier</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>属性：<br />+ el:模板元素<br />+ vm: vue实例</td>
+</tr>
+<tr>
+<td>方法：<br />+compile(el):编译模板元素<br />+compilElement(node):解析元素中的指令 <br />+compileText(node): 解析元素中的文本<br />+isDirective(attrName): 判断是否是指令<br />+isTextNode(node):判断是否是文本节点<br />+isElementNode(node):判断是否是元素节点</td>
+</tr>
+</tbody></table>
+<h2 id="初步代码-2"><a href="#初步代码-2" class="headerlink" title="初步代码"></a>初步代码</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Compiler</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(vm) &#123;</span><br><span class="line">    <span class="built_in">this</span>.el = vm.$el</span><br><span class="line">    <span class="built_in">this</span>.vm = vm</span><br><span class="line">    <span class="built_in">this</span>.complie(<span class="built_in">this</span>.el)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 编译模板，处理文本节点和元素节点</span></span><br><span class="line">  complie(el) &#123;</span><br><span class="line">    <span class="comment">// this.vm.render(this.el)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//  获取元素所有子节点(伪数组)</span></span><br><span class="line">    <span class="keyword">let</span> childNodes = [...el.childNodes]</span><br><span class="line">    <span class="comment">//遍历子节点</span></span><br><span class="line">    childNodes.forEach(<span class="function"><span class="params">node</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">//处理节点编译</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.isTextNode(node)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.compileText(node)</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">this</span>.isElementNode(node)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.compilElement(node)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">//判断节点是否有子节点，如果有子节点，递归调用节点编译</span></span><br><span class="line">      <span class="keyword">if</span> (node.childNodes &amp;&amp; node.childNodes.length) &#123;</span><br><span class="line">        <span class="built_in">this</span>.complie(node)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//  编译元素节点，处理指令</span></span><br><span class="line">  compilElement(node) &#123;</span><br><span class="line">    <span class="comment">//遍历元素属性</span></span><br><span class="line">    <span class="keyword">let</span> attributes = [...node.attributes]</span><br><span class="line">    attributes.forEach(<span class="function"><span class="params">attr</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.isDirective(attr.name)) &#123;</span><br><span class="line">        <span class="keyword">let</span> handleName = attr.name.substr(<span class="number">2</span>)</span><br><span class="line">        <span class="keyword">let</span> key = attr.value</span><br><span class="line">        <span class="built_in">this</span>.update(node, key, handleName)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  update(node, key, handleName) &#123;</span><br><span class="line">    <span class="keyword">let</span> updateFn = <span class="built_in">this</span>[handleName + <span class="string">&#x27;Updater&#x27;</span>]</span><br><span class="line">    updateFn &amp;&amp; updateFn(node, <span class="built_in">this</span>.vm[key])</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  textUpdater(node, value) &#123;</span><br><span class="line">    node.textContent = value</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  modelUpdater(node, value) &#123;</span><br><span class="line">    node.value = value</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//编译文本节点，处理差值表达式</span></span><br><span class="line">  compileText(node) &#123;</span><br><span class="line">    <span class="keyword">let</span> reg = <span class="regexp">/\&#123;\&#123;(.+?)\&#125;\&#125;/</span></span><br><span class="line">    <span class="keyword">let</span> value = node.textContent</span><br><span class="line">    <span class="keyword">if</span> (reg.test(value)) &#123;</span><br><span class="line">      <span class="keyword">let</span> key = <span class="built_in">RegExp</span>.$<span class="number">1.</span>trim()</span><br><span class="line">      node.textContent = value.replace(reg, <span class="built_in">this</span>.vm[key])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//判断是否是指令</span></span><br><span class="line">  isDirective(attrName) &#123;</span><br><span class="line">    <span class="keyword">return</span> attrName.startsWith(<span class="string">&#x27;v-&#x27;</span>) || attrName.startsWith(<span class="string">&#x27;:&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//判断是否是元素节点</span></span><br><span class="line">  isElementNode(node) &#123;</span><br><span class="line">    <span class="keyword">return</span> node.nodeType === <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//判断是否是文本节点</span></span><br><span class="line">  isTextNode(node) &#123;</span><br><span class="line">    <span class="keyword">return</span> node.nodeType === <span class="number">3</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Dep类"><a href="#Dep类" class="headerlink" title="Dep类"></a>Dep类</h1><h2 id="功能-3"><a href="#功能-3" class="headerlink" title="功能"></a>功能</h2><ol>
+<li>在data getter中收集依赖，添加观察者</li>
+<li>在data setter中通知依赖，通知所有观察者</li>
+</ol>
+<h2 id="类图-3"><a href="#类图-3" class="headerlink" title="类图"></a>类图</h2><table>
+<thead>
+<tr>
+<th>Dep</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>属性：<br />+subs： 用于存储观察者</td>
+</tr>
+<tr>
+<td>方法：<br />+addSub(sub):用于添加观察者<br />+notify()：用于通知观察者</td>
+</tr>
+</tbody></table>
+<h2 id="初步代码-3"><a href="#初步代码-3" class="headerlink" title="初步代码"></a>初步代码</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>() &#123;</span><br><span class="line">    <span class="comment">//存储所有观察者</span></span><br><span class="line">    <span class="built_in">this</span>.subs = []</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 添加观察者</span></span><br><span class="line">  addSub(sub) &#123;</span><br><span class="line">    <span class="keyword">if</span> (sub &amp;&amp; sub.update) &#123;</span><br><span class="line">      <span class="built_in">this</span>.subs.push(sub)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//发送通知</span></span><br><span class="line">  notify() &#123;</span><br><span class="line">    <span class="built_in">this</span>.subs.forEach(<span class="function"><span class="params">sub</span> =&gt;</span> &#123;</span><br><span class="line">      sub.update()</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>需要在data的get中，收集依赖，在data的setter中通知依赖</strong></p>
+<p>在observer类中，处理响应式数据时，统一定义发布者dep = new Dep()。</p>
+<p>在set函数中，当数据方式变化时，调用dep.notify()方法，通知观察者。</p>
+<p>在get函数中，收集依赖，当存在观察者时，添加观察者。</p>
+<p>在观察者类中，为Dep类添加静态属性target，指向当前观察者。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//observer.js</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">defineReactive(obj, key, value) &#123;</span><br><span class="line">  <span class="keyword">let</span> _this = <span class="built_in">this</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//为每一个属性创建一个Dep对象, 负责收集依赖，并发送通知</span></span><br><span class="line">  <span class="keyword">let</span> dep = <span class="keyword">new</span> Dep()</span><br><span class="line"></span><br><span class="line">  <span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">    configurable: <span class="literal">true</span>,</span><br><span class="line">    enumerable: <span class="literal">true</span>,</span><br><span class="line">    get() &#123;</span><br><span class="line">      <span class="comment">//判断有无观察者，并添加观察者</span></span><br><span class="line">      Dep.target &amp;&amp; dep.addSub(Dep.target)</span><br><span class="line">      <span class="comment">//若使用obj[key]会引发死循环，因为使用obj[key]即会触发get方法</span></span><br><span class="line">      <span class="keyword">return</span> value</span><br><span class="line">    &#125;,</span><br><span class="line">    set(newValue) &#123;</span><br><span class="line">      <span class="keyword">if</span> (newValue === value) &#123;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">      &#125;</span><br><span class="line">      value = newValue</span><br><span class="line">      <span class="comment">//若新赋值的值为对象，对象也应该是响应式的。</span></span><br><span class="line">      _this.walk(newValue)</span><br><span class="line">      <span class="comment">//数据变化时，发送通知</span></span><br><span class="line">      dep.notify()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//...</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="Watcher-类"><a href="#Watcher-类" class="headerlink" title="Watcher 类"></a>Watcher 类</h1><h2 id="功能-4"><a href="#功能-4" class="headerlink" title="功能"></a>功能</h2><ol>
+<li>当数据变化时触发依赖，dep通知所有watcher实例，更新视图</li>
+<li>自身实例化时，向dep对象中添加自己</li>
+</ol>
+<h2 id="类图-4"><a href="#类图-4" class="headerlink" title="类图"></a>类图</h2><table>
+<thead>
+<tr>
+<th>Watcher</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>属性：<br />+ vm:vue实例<br />+ key:要更新的属性名称<br />+callback: 回调函数<br />+oldValue: 之前的值</td>
+</tr>
+<tr>
+<td>方法：<br />+ update():更新视图</td>
+</tr>
+</tbody></table>
+<h2 id="初步代码-4"><a href="#初步代码-4" class="headerlink" title="初步代码"></a>初步代码</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Watcher</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(vm, key, callback) &#123;</span><br><span class="line">    <span class="built_in">this</span>.vm = vm;</span><br><span class="line">    <span class="built_in">this</span>.key = key;</span><br><span class="line">    <span class="built_in">this</span>.callback = callback;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//将Watcher类添加到Dep类的target属性中</span></span><br><span class="line">    <span class="comment">//触发get方法，将Watcher添加到Dep中</span></span><br><span class="line">    Dep.target = <span class="built_in">this</span></span><br><span class="line">    <span class="comment">// 获取之前的值，触发了get方法</span></span><br><span class="line">    <span class="built_in">this</span>.oldValue = vm[key];</span><br><span class="line">    <span class="comment">// 防止后面重复添加</span></span><br><span class="line">    Dep.target = <span class="literal">null</span> </span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  update() &#123;</span><br><span class="line">    <span class="keyword">let</span> newValue = <span class="built_in">this</span>.vm[<span class="built_in">this</span>.key]</span><br><span class="line">    <span class="keyword">if</span> (newValue == <span class="built_in">this</span>.oldValue) &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">this</span>.callback(newValue)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>需要在更新视图的操作中，添加Watcher对象</strong>，即在<code>Compiler</code>类中，添加Watcher对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//compiler.js</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="comment">//  编译元素节点，处理指令</span></span><br><span class="line">compilElement(node) &#123;</span><br><span class="line">  <span class="comment">//遍历元素属性</span></span><br><span class="line">  <span class="keyword">let</span> attributes = [...node.attributes]</span><br><span class="line">  attributes.forEach(<span class="function"><span class="params">attr</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.isDirective(attr.name)) &#123;</span><br><span class="line">      <span class="keyword">let</span> handleName = attr.name.substr(<span class="number">2</span>)</span><br><span class="line">      <span class="keyword">let</span> key = attr.value</span><br><span class="line">      <span class="built_in">this</span>.update(node, key, handleName)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">update(node, key, handleName) &#123;</span><br><span class="line">  <span class="keyword">let</span> updateFn = <span class="built_in">this</span>[handleName + <span class="string">&#x27;Updater&#x27;</span>]</span><br><span class="line">  updateFn &amp;&amp; updateFn(node,<span class="built_in">this</span>.vm[key])</span><br><span class="line"></span><br><span class="line">  <span class="comment">//创建Watcher对象，当数据改变，更新视图</span></span><br><span class="line">  <span class="keyword">new</span> Watcher(<span class="built_in">this</span>.vm,key,<span class="function"><span class="params">newValue</span>=&gt;</span>&#123;</span><br><span class="line">    updateFn(node,newValue)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//编译文本节点，处理差值表达式</span></span><br><span class="line">compileText(node) &#123;</span><br><span class="line">  <span class="keyword">let</span> reg = <span class="regexp">/\&#123;\&#123;(.+?)\&#125;\&#125;/</span></span><br><span class="line">  <span class="keyword">let</span> value = node.textContent</span><br><span class="line">  <span class="keyword">if</span> (reg.test(value)) &#123;</span><br><span class="line">    <span class="keyword">let</span> key = <span class="built_in">RegExp</span>.$<span class="number">1.</span>trim()</span><br><span class="line">    node.textContent = value.replace(reg, <span class="built_in">this</span>.vm[key])</span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建Watcher对象，当数据改变，更新视图</span></span><br><span class="line">    <span class="keyword">new</span> Watcher(<span class="built_in">this</span>.vm,key,<span class="function">(<span class="params">newValue</span>)=&gt;</span>&#123;</span><br><span class="line">      <span class="comment">//数据变化时，</span></span><br><span class="line">      node.textContent = newValue</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//...</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>到此时，数据响应式已实现了</strong></p>
+<h1 id="数据双向绑定"><a href="#数据双向绑定" class="headerlink" title="数据双向绑定"></a>数据双向绑定</h1><p>到目前，数据响应式已经实现了，当数据发生变化时，视图会随之变化。</p>
+<p>现在，需要添加事件绑定，当视图发生变化时，数据也随之变化。</p>
+<p>视图输入是在表单元素中，即v-model绑定的元素。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//compiler.js</span></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">update(node, key, handleName) &#123;</span><br><span class="line">  <span class="keyword">let</span> updateFn = <span class="built_in">this</span>[handleName + <span class="string">&#x27;Updater&#x27;</span>]</span><br><span class="line">  updateFn &amp;&amp; updateFn.call(<span class="built_in">this</span>,node,<span class="built_in">this</span>.vm[key],key)</span><br><span class="line"></span><br><span class="line">  <span class="comment">//创建Watcher对象，当数据改变，更新视图</span></span><br><span class="line">  <span class="keyword">new</span> Watcher(<span class="built_in">this</span>.vm,key,<span class="function"><span class="params">newValue</span>=&gt;</span>&#123;</span><br><span class="line">    updateFn.call(<span class="built_in">this</span>,node,newValue,key)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// v-model</span></span><br><span class="line">modelUpdater(node, value,key) &#123;</span><br><span class="line">  node.value = value</span><br><span class="line">  <span class="comment">//表单元素注册事件，实现数据双向绑定</span></span><br><span class="line">  node.addEventListener(<span class="string">&#x27;input&#x27;</span>,<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    <span class="comment">//赋值，触发set，触发响应式机制,更新视图</span></span><br><span class="line">    <span class="built_in">this</span>.vm[key] = node.value</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//...</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h1><p><a target="_blank" rel="noopener" href="https://github.com/qiana-wei/qiana-wei.github.io/tree/master/code-example/simple-vue">见github仓库：https://github.com/qiana-wei/qiana-wei.github.io/tree/master/code-example/simple-vue</a></p>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
+        </div>
+
+        
+        <section class="post-tags">
+            <div>
+                <span>
+                    标签:</span>
+                <span class="tag">
+                    
+                        
+                            <a href="/tags/VUE/">#
+                                VUE</a>
+                        
+                            <a href="/tags/VUE-%E6%A8%A1%E6%8B%9F%E4%B8%80%E4%B8%AA%E6%9C%80%E5%B0%8F%E7%89%88%E6%9C%AC%E7%9A%84vue/">#
+                                VUE-模拟一个最小版本的vue</a>
+                        
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">后退
+                </a>
+                <span>·
+                </span>
+                <a href="/">首页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/12/20/VUE/vue-virtual-dom/">VUE-虚拟Dom</a>
+            
+            
+                <a class="next" rel="next" href="/2020/12/18/JS/Object.defineProperty/">Object.defineProperty</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Qiana | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
