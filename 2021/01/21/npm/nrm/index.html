@@ -12,7 +12,7 @@
 
 
 
-<title>Mac系统升级后出现 &#34;xcode-select error&#34; | Qiana前端小栈</title>
+<title>使用nrm 管理镜像地址 | Qiana前端小栈</title>
 
 
 
@@ -114,11 +114,73 @@
     class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Mac系统升级后出现 &#34;xcode-select error&#34;</h1>
+            <h1 class="post-title">使用nrm 管理镜像地址</h1>
             
                 <div class="post-meta">
                     
@@ -129,14 +191,14 @@
                     
                         <span class="post-time">
                             日期:
-                            <a href="#">2020-12-30</a>&nbsp;&nbsp;
+                            <a href="#">2021-01-21</a>&nbsp;&nbsp;
                         </span>
                     
                     
                         <span class="post-category">
                             分类:
                             
-                                <a href="/categories/Mac/">Mac</a>&nbsp;&nbsp;
+                                <a href="/categories/NPM/">NPM</a>&nbsp;&nbsp;
                             
                         </span>
                     
@@ -145,12 +207,22 @@
         </header>
 
         <div class="post-content">
-            <blockquote>
-<p>升级mac系统之后使用git时，出现了报错信息：</p>
-<p>xcrun: error: invalid active developer path (/Library/Developer/CommandLineTools), missing xcrun at: /Library/Developer/CommandLineTools/usr/bin/xcrun</p>
-</blockquote>
-<p>重装xcode command line 得到解决</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcode<span class="literal">-select</span> -<span class="literal">-install</span></span><br></pre></td></tr></table></figure>
+            <h1 id="使用nrm-管理镜像地址"><a href="#使用nrm-管理镜像地址" class="headerlink" title="使用nrm 管理镜像地址"></a>使用nrm 管理镜像地址</h1><p>安装</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install <span class="literal">-g</span> nrm</span><br></pre></td></tr></table></figure>
+
+<p>查看镜像列表</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nrm <span class="built_in">ls</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">* npm -------- https://registry.npmjs.org/</span><br><span class="line">  yarn ------- https://registry.yarnpkg.com/</span><br><span class="line">  cnpm ------- http://r.cnpmjs.org/</span><br><span class="line">  taobao ----- https://registry.npm.taobao.org/</span><br><span class="line">  nj --------- https://registry.nodejitsu.com/</span><br><span class="line">  npmMirror -- https://skimdb.npmjs.com/registry/</span><br><span class="line">  edunpm ----- http://registry.enpmjs.org/</span><br></pre></td></tr></table></figure>
+
+<p>切换镜像</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nrm use taobao</span><br></pre></td></tr></table></figure>
+
+<p>添加镜像</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nrm add &lt;r_name&gt; &lt;r_url&gt;</span><br></pre></td></tr></table></figure>
+
+<p>删除镜像</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nrm <span class="built_in">del</span> &lt;r_name&gt;</span><br></pre></td></tr></table></figure>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text/javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.2.0/dist/mindmap.min.css">
         </div>
@@ -163,8 +235,11 @@
                 <span class="tag">
                     
                         
-                            <a href="/tags/Mac/">#
-                                Mac</a>
+                            <a href="/tags/NPM/">#
+                                NPM</a>
+                        
+                            <a href="/tags/nrm/">#
+                                nrm</a>
                         
                     
                 </span>
@@ -179,10 +254,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2021/01/20/framework/elementui/cascader/">vue element 级联选择器获取对象</a>
             
-            
-                <a class="next" rel="next" href="/2020/12/25/PerformanceOptimization/https/">HTTPS</a>
+                <a class="next" rel="next" href="/2021/01/20/framework/elementui/cascader/">vue element 级联选择器获取对象</a>
             
         </section>
 
