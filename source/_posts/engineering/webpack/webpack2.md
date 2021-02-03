@@ -588,7 +588,7 @@ yarn add vue-hot-reload-api --dev
 
 *VUE文件*
 
-```vue
+```xml
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
