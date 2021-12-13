@@ -67,25 +67,5 @@ vetur 文档： https://vuejs.github.io/vetur/
     element attrs： https://github.com/ElementUI/element-helper-json/blob/master/element-attributes.json
 
 
-
-
-
-github包安装
-
-npm i git+http://git.ddxq.mobi/weiqianqian/temporary-base-utils.git#master --save-dev
-yarn add git+http://git.ddxq.mobi/weiqianqian/temporary-base-utils.git#master
-
-yarn add git+ssh:git@git.ddxq.mobi:weiqianqian/temporary-base-utils.git
-
-npm install git+ssh://git@git.ddxq.mobi/weiqianqian/temporary-base-utils.git --save
-
-坑：
-yarn link 不安装cli 命令
-
-注意：
-1. package.json 要添加 "license": "ISC",否则会报错
-2. 私有仓库下载包，需要使用ssh
-  注意：git@git.ddxq.mobi:weiqianqian  中的`:`要改成`/`
-  npm install git+ssh://git@git.ddxq.mobi/weiqianqian/temporary-base-utils.git --save
-  yarn add git+ssh:git@git.ddxq.mobi:weiqianqian/temporary-base-utils.git ----- 待验证
+    
 
