@@ -34,5 +34,12 @@ cd tree-dir
 tree -a -I "node_module" > tree-dir.md
 ```
 
+如果需要忽略多个文件，比如`node_modules`和`.git`
+
+```powershell
+cd tree-dir
+tree -a -I "node_module|.git" > tree-dir.md
+```
+
 
 
