@@ -72,3 +72,98 @@ console.log(process.platform)//标识运行 Node.js 进程的操作系统平台�
 // 'win32'--windows
 // 'android' --  安卓系统（实验版本）
 ```
+
+# 获取运行状态
+
+> 启动参数、进程工作时占用的id：PID、进程运行时间
+
+## process.argv--获取启动参数
+
+*执行文件内容*
+
+```js
+//process.js
+console.log(process.argv)
+```
+
+执行命令1
+
+```bash
+node ./process.js
+```
+
+*输出结果1*
+
+```bash
+[
+  '/usr/local/Cellar/node/15.5.0/bin/node', # node 启动程序对应的完整路径
+  '/Users/qiana/project/node-learn/process.js' # 当前进程文件的绝对路径
+]
+```
+
+
+
+执行命令2
+
+```bash
+node ./process.js 1 2
+```
+
+*输出结果1*
+
+```bash
+[
+  '/usr/local/Cellar/node/15.5.0/bin/node' ,# node 启动程序对应的完整路径
+  '/Users/qiana/project/node-learn/process.js',# 当前进程执行文件的绝对路径
+  '1', # 参数1
+  '2' # 参数2
+]
+```
+
+> ps：
+>
+> `process.argv0`存储了NodeJs启动时传入的`argv[0]`原始值的只读副本
+
+## process.execArgv--获取进程启动时传入的命令行选项
+
+*执行文件内容*
+
+```js
+//process.js
+console.log(process.argv)
+console.log(process.execArgv)
+```
+
+```bash
+$ node --harmony ./process.js
+```
+
+*输出结果*
+
+```bash
+[
+  '/usr/local/Cellar/node/15.5.0/bin/node',
+  '/Users/weiqianqian/project/node-learn/process.js',
+  '--version'
+] # argv
+
+[--harmony] # execArgv
+```
+
+## process.pid -- 获取进程工作时占用的id
+
+*执行文件内容*
+
+```js
+//process.js
+console.log(process.pid)
+```
+
+```bash
+$ node ./process.js
+```
+
+*输出结果*
+```bash
+42593
+```
