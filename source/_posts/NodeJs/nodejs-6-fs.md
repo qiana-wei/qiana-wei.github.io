@@ -93,6 +93,7 @@ fs.open(path.resolve('data.txt'),'r',(err,readFd)=>{
     fs.read(readFd,buf,0,3,0,(err,readBytes,data)=>{
         console.log(readBytes)
         console.log(data)
+        fs.close(readFd)
     })
 })
 ```
@@ -100,7 +101,7 @@ fs.open(path.resolve('data.txt'),'r',(err,readFd)=>{
 ## `fs.write(fd, buffer[, offset[, length[, position]]], callback)`
 > `fd <integer>`
 > `buffer <Buffer> | <TypedArray> | <DataView> | <string> | <Object>`
-> `offset <integer>`: 确定要写入的缓冲区部分偏移量
+> `offset <integer>`: buffer中读取位置的偏移量
 > `length <integer>`: 整数，指定要写入的字节数
 > `position <integer>`: 从文件开头数据应被写入的偏移量。如果不是数值，则数据写入当前位置
 > `callback <Function>`
@@ -109,6 +110,44 @@ fs.open(path.resolve('data.txt'),'r',(err,readFd)=>{
 > * `buffer <Buffer> | <TypedArray> | <DataView>`
 
 将Buffer写入fd制定的文件。如果Buffer是普通对象，则它必须具有自有的`toString`函数属性。
+
+```js
+const fs = require('fs')
+const path = require('path')
+
+const buf = Buffer.from('abcdefg')
+
+fs.open(path.resolve('data.txt'),'w',(err,writeFd)=>{
+  console.log(writeFd)
+  fs.write(writeFd,buf,2,3,2,(err,wriitten,buffer)=>{
+    console.log(wriitten)
+    console.log(buffer)
+    console.log(buffer.toString())
+    fs.close(writeFd)
+  })
+})
+```
+
+## `fs.write(fd, string[, position[, encoding]], callback)`
+> `fd <integer>`
+> `string <string> | <Object>`
+> `position <integer>`: 指从文件开头数据应被写入的偏移量
+> `encoding <string>` 默认值: 'utf8'
+> `callback <Function>`
+> * `err <Error>`
+> * `written <integer>`
+> * `string <string>`
+
+将string写入fd指定的文件。如果`string`不是字符串，或者不是具有自有的`toString`函数属性的对象，会抛出异常。
+
+# 文件拷贝自定义实现
+
+实现大文件读写拷贝
+
+实现步骤
+
+
+
 
 
 # 文件系统标志
